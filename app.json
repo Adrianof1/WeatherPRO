@@ -20,10 +20,19 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.adrianoferreira.weatherpro"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1f800f45-7ab9-4def-b8df-3e449c8b7528"
+      }
+    },
+    "plugins": [
+      "expo-font"
+    ]
   }
 }
