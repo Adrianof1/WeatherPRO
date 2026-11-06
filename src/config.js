@@ -13,6 +13,7 @@ export const ENV = {
 // Política de privacidade publicada pelo GitHub Pages (pasta docs/). Obrigatória na Play Store.
 export const LINKS = {
   privacy: 'https://adrianof1.github.io/WeatherPRO/privacidade.html',
+  terms: 'https://adrianof1.github.io/WeatherPRO/termos.html',
   linkedin: 'https://linkedin.com/in/adrianoferreira-dev',
 };
 

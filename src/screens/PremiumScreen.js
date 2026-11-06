@@ -148,6 +148,9 @@ export default function PremiumScreen({ theme }) {
       <TouchableOpacity onPress={() => Linking.openURL(LINKS.privacy)}>
         <Text style={styles.linkText}>Política de privacidade</Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => Linking.openURL(LINKS.terms)}>
+        <Text style={styles.linkText}>Termos de uso</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }

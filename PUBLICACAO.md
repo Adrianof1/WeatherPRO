@@ -3,7 +3,31 @@
 Passo a passo do que falta para publicar. Itens marcados com 💻 já estão prontos no código; o resto depende de você
 no Play Console, AdMob e RevenueCat.
 
-## 0. Antes de tudo: regra das contas pessoais novas
+> Segue a ordem do guia genérico de publicação (projeto TOMEI, `guias/GUIA-PUBLICACAO-GOOGLE-PLAY.md`).
+> Aqui ficam só as respostas específicas do WeatherPRO.
+
+## ⚠️ Decidir antes: o nome "WeatherPRO" já existe na Play
+
+Já existe o **"WeatherPro: Forecast & Radar"** (pacote `com.mg.android`, DTN Germany, antigo MeteoGroup), com mais
+de 1 milhão de downloads e ainda ativo. Publicar com o mesmo nome arrisca recusa por **falsificação de
+identidade/marca** e confunde a busca. Opções:
+
+1. Nome novo na loja (e no app) com personalidade própria, ex.: "Chuvisco", "Alerta Chuva", "Céu Aberto". Pesquise
+   cada um na Play e no INPI (busca.inpi.gov.br → Marcas, classe 9).
+2. Manter "WeatherPRO" só como nome interno.
+
+O **pacote** `com.adrianoferreira.weatherpro` 🔒 pode ficar: ele não aparece na loja e é seu. Se trocar o nome,
+mude `expo.name` no `app.json`, os textos da seção 4 e regenere `store/recurso-grafico-1024x500.png`.
+
+## Tipo de conta
+
+App de clima **não** está nas categorias restritas (finanças, saúde/medicina, VPN, governo): **conta pessoal serve**.
+Grátis 🔒 (tem compras no app; grátis nunca vira pago).
+
+**Status de comerciante:** o app tem anúncios e compras → **comerciante**. Exige link de Termos de Serviço
+(💻 `docs/termos.html`) e, em conta pessoal, deixa telefone e endereço públicos (a partir de mar/2027).
+
+## 0. Regra das contas pessoais novas
 
 Se a sua conta de desenvolvedor é **pessoal** e foi criada depois de nov/2023, o Google exige um **teste fechado
 com pelo menos 12 testadores ativos por 14 dias seguidos** antes de liberar a produção. Comece o teste fechado o quanto
@@ -15,7 +39,10 @@ antes (amigos, colegas de ADS, grupos). Contas de organização (CNPJ) não têm
 - Ative o GitHub Pages: repositório → Settings → Pages → *Deploy from a branch* → `main` / pasta `/docs`.
 - URL final: `https://adrianof1.github.io/WeatherPRO/privacidade.html` (já usada no app em `src/config.js`, `LINKS.privacy`).
 - Cole a mesma URL no Play Console → Política do app → Política de privacidade.
+- Termos de uso: `https://adrianof1.github.io/WeatherPRO/termos.html` (link na aba Café, `LINKS.terms`).
 - O repositório precisa ser **público** para o Pages gratuito.
+- Troque `SEU_EMAIL_DE_CONTATO` nos dois arquivos pelo e-mail público do desenvolvedor.
+- Teste as duas URLs numa aba anônima no celular antes de colar na Console.
 
 ## 2. Anúncios (AdMob)
 
@@ -34,6 +61,11 @@ antes (amigos, colegas de ADS, grupos). Contas de organização (CNPJ) não têm
   cadastre seu aparelho como dispositivo de teste no AdMob.
 
 ## 3. Assinatura e AAB 💻
+
+**Permissões finais** (conferidas no manifesto gerado pelo prebuild): localização fina e aproximada, internet,
+vibração, mais `ACCESS_NETWORK_STATE`, `WAKE_LOCK` e `AD_ID` das bibliotecas de anúncio/compra. O Expo adicionava
+`READ/WRITE_EXTERNAL_STORAGE` e `SYSTEM_ALERT_WINDOW`, que o app não usa; agora estão em
+`android.blockedPermissions` no `app.json`.
 
 `eas.json` já está pronto para produção: gera **AAB**, incrementa o `versionCode` sozinho e envia para a faixa
 **interna** como rascunho.
@@ -92,10 +124,18 @@ Dados meteorológicos: OpenWeather.
 
 **Categoria:** Clima · **Tags:** previsão do tempo, chuva, alertas
 
-**Imagens necessárias:**
-- Ícone 512×512 PNG (use `assets/icon.png` redimensionado)
-- Gráfico de destaque 1024×500
-- Pelo menos 2 capturas do celular (recomendado 4 a 8): Clima, Previsão, Alertas, Alagamentos, Café
+**Imagens:**
+
+| Item | Tamanho | Status |
+|---|---|---|
+| Ícone | 512×512 PNG, sem transparência | 💻 `store/icone-512.png` |
+| Recurso gráfico | 1024×500, sem transparência | 💻 `store/recurso-grafico-1024x500.png` |
+| Capturas do celular | 2 a 8, **exatamente 9:16** (ex.: 1080×1920) | Falta. ⚠️ Print direto de celular 20:9 é recusado: recorte para 9:16 |
+| Capturas de tablet 7" | até 8, 9:16, ex.: 1080×1920 | Falta. ⚠️ Obrigatórias, porque o app roda em tablets |
+| Capturas de tablet 10" | até 8, 9:16, lados 1080–7680, ex.: 1620×2880 | Falta. ⚠️ Obrigatórias pelo mesmo motivo |
+
+Sugestão: telas reais (Clima, Previsão, Alertas, Alagamentos, Café) dentro de uma moldura com fundo da marca e uma
+frase curta, renderizada no tamanho exato. Só frases de funções que existem na versão enviada.
 
 ## 5. Formulários do Play Console (Política do app)
 
@@ -120,8 +160,10 @@ Confira a página "Data disclosure" do AdMob e do RevenueCat se o formulário mu
 - **Classificação indicativa (IARC):** categoria "Utilitário" → responde "não" a violência, sexo etc. → Livre.
 - **Público-alvo:** 18+ (ou 13+). **Não** marque crianças: com crianças entra a política "Famílias" e o AdMob
   precisa de configuração especial.
-- **Acesso ao app:** "Todas as funcionalidades estão disponíveis sem acesso especial".
-- **App de notícias / saúde / financeiro:** Não.
+- **Detalhes do login (Acesso ao app):** "Não" / "Todas as funcionalidades estão disponíveis sem acesso especial".
+- **App de notícias / saúde / financeiro / governo:** Não. (Compra no app não conta como recurso financeiro.)
+- **Classificação (IARC):** responda "sim" para compras digitais e anúncios; "não" para compartilhar localização
+  com outros usuários.
 - **Permissão de localização:** só em primeiro plano, não precisa da declaração de localização em segundo plano.
 
 ## 6. Compras (RevenueCat)
