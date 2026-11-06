@@ -10,6 +10,12 @@ export const ENV = {
   REVENUECAT_IOS_KEY: process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY || '',
 };
 
+// Política de privacidade publicada pelo GitHub Pages (pasta docs/). Obrigatória na Play Store.
+export const LINKS = {
+  privacy: 'https://adrianof1.github.io/WeatherPRO/privacidade.html',
+  linkedin: 'https://linkedin.com/in/adrianoferreira-dev',
+};
+
 export const CONFIG = {
   api: { baseUrl: 'https://api.openweathermap.org', timeoutMs: 12000 },
   cache: {

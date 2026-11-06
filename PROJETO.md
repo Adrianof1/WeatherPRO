@@ -1,6 +1,6 @@
 # WeatherPRO — Acompanhamento do projeto
 
-Última atualização: 19/10/2026 · Versão do app: 3.0.0 · Pacote Android: `com.adrianoferreira.weatherpro`
+Última atualização: 06/11/2026 · Versão do app: 3.0.0 · Pacote Android: `com.adrianoferreira.weatherpro`
 
 ## 1. Estado atual
 
@@ -61,6 +61,12 @@ adb install -r app/build/outputs/apk/release/app-release.apk
 
 Ambiente usado: `ANDROID_HOME=C:\dev\android-sdk`, JDK 17 (`C:\dev\jdk17`). Anúncios e compras não funcionam no Expo Go.
 
+### v3.1 (preparação para a loja)
+- Permissão `VIBRATE` adicionada. Sem ela, a vibração do alerta extremo podia derrubar o app no Android.
+- Link da política de privacidade no rodapé e na aba Café, e botão "Privacidade dos anúncios" quando o UMP exigir.
+- Nome da cidade em português e, no GPS, o nome do geocoding em vez do bairro (também ao atualizar uma cidade buscada).
+- `eas.json` de produção gera AAB, incrementa o `versionCode` e envia para o teste interno.
+
 ## 4. O que ainda falta fazer
 
 ### Para as compras funcionarem (dependem de você)
@@ -73,23 +79,23 @@ Ambiente usado: `ANDROID_HOME=C:\dev\android-sdk`, JDK 17 (`C:\dev\jdk17`). Anú
 - [ ] Criar a mensagem de consentimento no AdMob (Privacidade e mensagens). Hoje falha com "no form configured".
 - [ ] Banner falha com `internal-error`. Aguardar as unidades novas começarem a servir e conferir o vínculo do app com a loja no AdMob.
 - [ ] Para iOS: criar um app iOS separado no AdMob. Hoje o `app.json` usa o mesmo ID nas duas plataformas.
-- [ ] Publicar `app-ads.txt` no site do desenvolvedor, quando houver.
+- [ ] Publicar `app-ads.txt` (pronto em `docs/app-ads.txt`) na raiz do site do desenvolvedor. Ver `PUBLICACAO.md`.
 
 ### Alagamentos (dados)
 - [ ] Corrigir as coordenadas dos pontos que caem em outro bairro (Teresina: Av. Raul Lopes, Poti Velho, Buenos Aires, Santa Maria da Codipi; Rio: Praça da Bandeira, Av. Presidente Vargas; Salvador: Bairro da Paz; Manaus: São Jorge; BH: Av. Tereza Cristina; Fortaleza: Carlito Pamplona).
-- [ ] Trocar o botão "Ver no mapa" para buscar por nome e cidade (mais robusto que a coordenada).
+- [x] Trocar o botão "Ver no mapa" para buscar por nome e cidade (mais robusto que a coordenada).
 - [ ] Substituir a lista fixa por uma fonte oficial (SGB/CPRM, Defesa Civil, CEMADEN) e citar a fonte.
 
-### Publicação
+### Publicação (passo a passo completo em `PUBLICACAO.md`)
 - [ ] Gerar uma chave de assinatura própria. O APK atual usa a chave de debug, que não serve para a Play Store.
-- [ ] Escrever e hospedar a política de privacidade (localização + anúncios).
+- [x] Escrever a política de privacidade (`docs/privacidade.html`). Falta ativar o GitHub Pages e colocar o e-mail de contato.
 - [ ] Preencher a declaração de segurança de dados e a classificação indicativa no Play Console.
 - [ ] Ícone, capturas de tela e descrição da loja.
 - [ ] Gerar o AAB com `npm run build:prod` (ou local) e enviar para teste interno.
 
 ### Melhorias técnicas
 - [ ] Testes automáticos para `alertEngine`, `weatherApi` e `purchases`.
-- [ ] Nome da cidade em português ("Lisboa" aparece como "Lisbon").
+- [x] Nome da cidade em português ("Lisboa" aparece como "Lisbon").
 - [ ] Testar GPS depois de mudança de local, favoritos (precisa do Premium liberado) e alerta extremo com vibração.
 - [ ] Restringir a chave da OpenWeather no painel deles (ela vai embutida no app).
 - [ ] Mover chaves para o EAS (`eas env:create`) se for usar o build na nuvem.

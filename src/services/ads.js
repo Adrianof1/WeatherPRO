@@ -15,7 +15,9 @@ const bannerUnitId = () => (__DEV__ && Ads ? Ads.TestIds.BANNER : ENV.ADMOB_BANN
 const interstitialUnitId = () => (__DEV__ && Ads ? Ads.TestIds.INTERSTITIAL : ENV.ADMOB_INTERSTITIAL_ID);
 
 const listeners = new Set();
-const state = { ready: false, interstitial: null, loaded: false, lastShown: 0, started: false };
+const state = {
+  ready: false, interstitial: null, loaded: false, lastShown: 0, started: false, privacyOptions: false,
+};
 
 const setReady = (value) => {
   state.ready = value;
@@ -42,10 +44,12 @@ export const AdService = {
       try {
         const info = await Ads.AdsConsent.gatherConsent();
         canRequestAds = info.canRequestAds;
+        // Na UE/UK e em alguns estados dos EUA o Google exige um botão para o usuário rever a escolha.
+        state.privacyOptions = info.privacyOptionsRequirementStatus === 'REQUIRED';
       } catch (e) {
         console.log('[AdMob] Consentimento indisponível:', e?.message);
       }
-      if (!canRequestAds) return;
+      if (!canRequestAds) { setReady(false); return; }
 
       await Ads.default().initialize();
 
@@ -63,6 +67,25 @@ export const AdService = {
     } catch (e) {
       state.started = false;
       console.log('[AdMob] Falha ao inicializar:', e?.message);
+    }
+  },
+
+  /** true quando o app deve oferecer "Privacidade dos anúncios" (exigência do UMP). */
+  privacyOptionsRequired: () => state.privacyOptions,
+
+  /** Reabre o formulário de consentimento. Se o usuário passar a permitir, inicia os anúncios. */
+  async showPrivacyOptions() {
+    if (!Ads) return false;
+    try {
+      const info = await Ads.AdsConsent.showPrivacyOptionsForm();
+      if (info?.canRequestAds && !state.ready) {
+        state.started = false;
+        await AdService.init();
+      }
+      return true;
+    } catch (e) {
+      console.log('[AdMob] Formulário de privacidade indisponível:', e?.message);
+      return false;
     }
   },
 

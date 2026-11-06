@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { styles } from '../styles';
 import { GlassCard, SectionLabel } from '../components/ui';
 import { usePremium } from '../context/PremiumContext';
-import { CONFIG } from '../config';
+import { CONFIG, LINKS } from '../config';
 import { PurchaseService, isPurchasesAvailable } from '../services/purchases';
 
 const PERKS = [
@@ -145,6 +145,9 @@ export default function PremiumScreen({ theme }) {
       <Text style={styles.smallNote}>
         O pagamento é feito pela sua conta Google Play / Apple. Doações não são reembolsáveis pelo app.
       </Text>
+      <TouchableOpacity onPress={() => Linking.openURL(LINKS.privacy)}>
+        <Text style={styles.linkText}>Política de privacidade</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }

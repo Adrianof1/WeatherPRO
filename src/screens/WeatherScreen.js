@@ -5,7 +5,8 @@ import {
 import { FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { styles } from '../styles';
 import { DetailCard, EmptyState, GlassCard, SectionLabel, SmartBanner } from '../components/ui';
-import { CONFIG } from '../config';
+import { CONFIG, LINKS } from '../config';
+import { AdService, useAdsReady } from '../services/ads';
 import { getWindDirection, sanitizeInput } from '../utils/helpers';
 
 export default function WeatherScreen({
@@ -13,6 +14,7 @@ export default function WeatherScreen({
   isPremium, favorites, isFavorite, onToggleFavorite, onSelectFavorite, onOpenPremium, onRetryGPS,
 }) {
   const [searchText, setSearchText] = useState('');
+  useAdsReady(); // re-renderiza quando o consentimento termina (mostra "Privacidade dos anúncios")
 
   const submit = async () => {
     if (sanitizeInput(searchText).length < 2) return;
@@ -197,11 +199,21 @@ export default function WeatherScreen({
           <View style={styles.footer}>
             <Text style={styles.footerName}>Desenvolvido por Adriano Ferreira de Oliveira</Text>
             <View style={styles.footerRow}>
-              <TouchableOpacity style={styles.footerLink} onPress={() => Linking.openURL('https://linkedin.com/in/adrianoferreira-dev')}>
+              <TouchableOpacity style={styles.footerLink} onPress={() => Linking.openURL(LINKS.linkedin)}>
                 <FontAwesome5 name="linkedin" size={12} color="rgba(255,255,255,0.5)" />
                 <Text style={styles.footerLinkTxt}>LinkedIn</Text>
               </TouchableOpacity>
+              <TouchableOpacity style={styles.footerLink} onPress={() => Linking.openURL(LINKS.privacy)}>
+                <Ionicons name="shield-checkmark-outline" size={12} color="rgba(255,255,255,0.5)" />
+                <Text style={styles.footerLinkTxt}>Privacidade</Text>
+              </TouchableOpacity>
             </View>
+            {!isPremium && AdService.privacyOptionsRequired() && (
+              <TouchableOpacity style={[styles.footerLink, { marginTop: 8 }]} onPress={() => AdService.showPrivacyOptions()}>
+                <Ionicons name="options-outline" size={12} color="rgba(255,255,255,0.5)" />
+                <Text style={styles.footerLinkTxt}>Privacidade dos anúncios</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </Animated.View>
       )}

@@ -5,11 +5,14 @@ import { styles } from '../styles';
 import { GlassCard, SmartBanner } from '../components/ui';
 import { getRiskColor } from '../utils/helpers';
 
-const openMap = (point) => {
-  const web = `https://www.google.com/maps/search/?api=1&query=${point.lat},${point.lon}`;
+// Busca pelo nome + cidade: algumas coordenadas da base são aproximadas e caem em outro bairro.
+// A coordenada fica só como centro da busca.
+const openMap = (point, city) => {
+  const query = encodeURIComponent([point.name, city].filter(Boolean).join(', '));
+  const web = `https://www.google.com/maps/search/?api=1&query=${query}`;
   const native = Platform.OS === 'ios'
-    ? `maps:?q=${encodeURIComponent(point.name)}&ll=${point.lat},${point.lon}`
-    : `geo:${point.lat},${point.lon}?q=${point.lat},${point.lon}(${encodeURIComponent(point.name)})`;
+    ? `maps:?q=${query}&sll=${point.lat},${point.lon}`
+    : `geo:${point.lat},${point.lon}?q=${query}`;
   Linking.openURL(native).catch(() => Linking.openURL(web));
 };
 
@@ -62,7 +65,7 @@ export default function FloodScreen({ weather }) {
               </View>
             </View>
             <Text style={styles.floodDesc}>{point.desc}</Text>
-            <TouchableOpacity style={styles.floodMapBtn} onPress={() => openMap(point)}>
+            <TouchableOpacity style={styles.floodMapBtn} onPress={() => openMap(point, weather?.city)}>
               <Ionicons name="navigate-outline" size={14} color="#38bdf8" />
               <Text style={styles.floodMapText}>Ver no Mapa</Text>
             </TouchableOpacity>

@@ -2,6 +2,9 @@ import { CONFIG, ENV } from '../config';
 import { findFloodData, generateAlerts } from './alertEngine';
 import { formatTime, mapIcon, sanitizeInput } from '../utils/helpers';
 
+// O geocoding traz o nome em vários idiomas; preferimos o português ("Lisboa" em vez de "Lisbon").
+const ptName = (place) => place?.local_names?.pt || place?.name || null;
+
 const WEEKDAYS = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
 
 async function request(path, params) {
@@ -76,7 +79,8 @@ function processData(current, forecast, apiAlerts, names = {}) {
   }));
 
   const daily = buildDaily(forecast.list, tz);
-  const flood = [cityName, names.geo, names.reverse, current.name].map(findFloodData).find(Boolean) || null;
+  const flood = [cityName, names.geo, names.geoRaw, names.reverse, names.reverseRaw, current.name]
+    .filter(Boolean).map(findFloodData).find(Boolean) || null;
   const alerts = generateAlerts(current, forecast, cityName, apiAlerts, flood);
 
   return {
@@ -128,20 +132,23 @@ export const WeatherAPI = {
       if (e.message === 'API_KEY_MISSING') throw e;
     }
 
-    // Para GPS, descobre a cidade (best effort) só para casar com os pontos de alagamento.
+    // Para GPS, descobre a cidade (best effort): nome exibido e casamento com os pontos de alagamento.
+    // O endpoint de clima costuma devolver o bairro, por isso o nome do geocoding tem prioridade.
     let reverse = null;
     if (!geoInfo) {
       try {
         const rev = await request('/geo/1.0/reverse', { lat, lon, limit: 1 });
-        reverse = rev?.[0]?.name || null;
+        reverse = rev?.[0] || null;
       } catch (e) { /* segue com o nome do clima */ }
     }
 
     return processData(current, forecast, apiAlerts, {
-      display: geoInfo?.name,
+      display: geoInfo?.name || ptName(reverse),
       geo: geoInfo?.name,
-      reverse,
-      country: geoInfo?.country,
+      geoRaw: geoInfo?.rawName,
+      reverse: ptName(reverse),
+      reverseRaw: reverse?.name,
+      country: geoInfo?.country || reverse?.country,
     });
   },
 
@@ -150,6 +157,8 @@ export const WeatherAPI = {
     if (sanitized.length < 2) throw new Error('INVALID_CITY');
     const geo = await request('/geo/1.0/direct', { q: sanitized, limit: 1 });
     if (!Array.isArray(geo) || geo.length === 0) throw new Error('CITY_NOT_FOUND');
-    return this.fetchByCoords(geo[0].lat, geo[0].lon, { name: geo[0].name, country: geo[0].country });
+    return this.fetchByCoords(geo[0].lat, geo[0].lon, {
+      name: ptName(geo[0]), rawName: geo[0].name, country: geo[0].country,
+    });
   },
 };
