@@ -414,25 +414,72 @@ Obrigatório para contas pessoais criadas após nov/2023 antes da produção. Co
 2. Criar versão (pode reutilizar o AAB do interno ou enviar um novo com `versionCode` maior) → enviar para revisão ⏳.
 3. ≥ 12 testadores inscritos por ≥ 14 dias seguidos. Recrute 20+ (alguns desistem). Peça para manterem o app
    instalado e usarem.
-4. Não há como pular para conta pessoal. Sem 12 pessoas: (a) use o teste interno (sem revisão, até 100 pessoas — não
-   conta para a produção) para já usar o app p…
+4. Não há como pular para conta pessoal. Sem 12 pessoas: (a) use o **teste interno** (sem revisão, até 100 pessoas —
+   **não conta** para a produção) para já usar o app pela Play; (b) recrute em **grupos de troca de testes**
+   (Facebook/Telegram "teste fechado 12 testadores", subreddit r/AndroidClosedTesting), além de família, amigos e
+   colegas; (c) se houver CNPJ, uma **conta de organização** (D-U-N-S) dispensa a exigência (§1.1, §1.2).
+   - ⚠️ Cada testador = pessoa real com conta Google própria. Contas falsas ou "testadores" comprados podem levar à
+     **suspensão** (o Google avalia o engajamento e pergunta sobre o teste no pedido de produção).
+5. Colete feedback (formulário/e-mail) e publique correções — a Google pergunta sobre isso.
 
-> ✂️ **Trecho não recebido.** A cópia que originou este arquivo chegou cortada aqui. Complete com o original
-> (repositório do primeiro app, `guias/GUIA-PUBLICACAO-GOOGLE-PLAY.md`) o resto do §8, os §9 a §12 e os Anexos A e
-> B, mantendo as seções novas deste arquivo (§0.1, §1.2, §3.0, §M e os acréscimos marcados com 🛑).
+- Teste **aberto** não conta para liberar produção (e, para contas pessoais novas, costuma só ficar disponível
+  depois).
+- App com compras (§M): use o teste fechado também para testar as compras com contas de **teste de licença**.
 
 ## 9. Acesso à produção e lançamento
 
-> ✂️ Trecho não recebido — copiar do original.
+1. Painel › **Solicitar acesso à produção** → questionário sobre o teste fechado (quem testou, feedback, mudanças
+   feitas) ⏳ ~até 7 dias. (Conta de organização não passa por esse pedido.)
+2. Produção › Países (ex.: só Brasil; ⚠️ coerente com o status de comerciante) › criar versão (pode usar **Adicionar
+   da biblioteca** com o AAB já testado) › **lançamento gradual** (10–20% → 50% → 100%), acompanhando falhas e
+   avaliações.
+3. Depois: responder avaliações, acompanhar **Android Vitals** (falhas < 1,09%, ANR < 0,47%), pedir avaliação no app
+   no momento certo (In-App Review API).
+4. App com anúncios: vincular o app à loja no AdMob assim que a ficha estiver pública (§M.2).
 
 ## 10. Atualizações (cada nova versão)
 
-> ✂️ Trecho não recebido — copiar do original. Acréscimo: a cada versão, rode o registro do ambiente de build (§3.0)
-> e confira se a chave que assinou é a mesma das versões anteriores (certificado SHA-256 igual).
+A cada nova versão:
+
+- [ ] `versionCode` maior; `versionName` novo; notas da versão
+- [ ] 🛑 Registrar o ambiente de build e o AAB (§3.0) e conferir que o certificado SHA-256 de quem assinou é **o
+      mesmo** das versões anteriores
+- [ ] Mudou coleta de dados/SDK/internet? → **Segurança dos dados + Política de Privacidade** antes de enviar
+- [ ] Entrou compra/assinatura/doação? → Classificação (compras digitais = Sim), Detalhes do login (acesso para o
+      revisor), produtos em Monetizar, Termos de Uso (§M)
+- [ ] Entraram anúncios? → Anúncios = Sim, Segurança dos dados (ID de publicidade), política de anúncios (nada na
+      tela de bloqueio, sem intersticial inesperado) (§M.2)
+- [ ] Nova permissão sensível? → declaração
+- [ ] Ficha da loja descreve o que existe
+- [ ] Lançamento gradual
 
 ## 11. Armadilhas e lições aprendidas
 
-> ✂️ Trecho não recebido — copiar do original. Lições acrescentadas nesta cópia:
+| Problema | Como evitar |
+|---|---|
+| Identidade recusada | Comprovante de residência **recente** e no nome do titular |
+| `INSTALL_FAILED_UPDATE_INCOMPATIBLE` | Assinaturas diferentes. Use a mesma chave em todas as máquinas para testes; app da Play não instala sobre APK solto |
+| Perder a chave de upload | Backup em 2 lugares desde o dia 1 |
+| Reaproveitar a chave de outro app | Cada app tem a **sua** chave de upload; não use a de outro projeto que está no mesmo PC |
+| Pacote errado | Conferir `applicationId` antes do 1º envio (🔒) |
+| `versionCode` repetido | Sempre aumentar, mesmo após descartar um rascunho |
+| Política "no ar" mas mostrando a home do site | Conferir o título da página; arquivos em `public/`; DNS do subdomínio configurado |
+| Política e Segurança dos dados contraditórias | Escrever as duas juntas, a partir do código |
+| Descrição promete função futura | Descrever só o que está na versão enviada |
+| Comerciante com conta pessoal expõe endereço | Avaliar "não comerciante" (sem EEE/Reino Unido) ou conta de organização |
+| Esquecer o link da política **dentro do app** | Tela "Privacidade/Termos" no app |
+| Teste fechado com poucos testadores | Recrutar 20+ desde cedo |
+| Build Gradle travado (Windows) | `cd android; .\gradlew --stop` e tentar de novo |
+| Build sem memória em PC com pouca RAM | Fechar navegador; em `~/.gradle/gradle.properties` limitar `org.gradle.jvmargs` e `org.gradle.workers.max=1` |
+| Print do celular recusado na ficha | Proporção 20:9 não é aceita; use 9:16 exato |
+| Teste fechado com erros "não permite que os usuários existentes façam a atualização" + "não adiciona nem remove pacotes" | A versão está **sem pacote**: em "Criar versão" use **Adicionar da biblioteca** e escolha o AAB já enviado (o mesmo `versionCode` pode ir para várias faixas) |
+| "É preciso informar se o app usa permissões de intent para tela cheia" | Só aparece ao lançar fora do teste interno. Conteúdo do app › **Intent para tela cheia** → funcionalidade principal: **Despertador** ou **Chamadas** só se for mesmo o propósito do app; senão **Outro** (e o app pede a permissão ao usuário) |
+| Painel mostra "`pacote (unreviewed)`" | Normal até a 1ª revisão; testadores internos veem esse nome temporário |
+| Ficha pede capturas de tablet | Gerar 7" e 10" (ou restringir dispositivos, se o app realmente não suportar tablet) |
+| Compra "some" ou é reembolsada sozinha após 3 dias | Faltou confirmar (acknowledge) a compra (§M.3) |
+| Usuário paga por boleto e o app diz "erro" | Tratar compra **pendente** (§M.3) |
+
+Outras lições:
 
 - Nome comum em inglês (ex.: "<Assunto>Pro") pode já pertencer a um app estrangeiro grande, com o mesmo nome exato
   e milhões de downloads. Pesquise a Play inteira, não só apps brasileiros (§0.1).
@@ -637,28 +684,104 @@ após a compra pela própria Play.
 
 ## 12. Modelo de acompanhamento (copiar para o projeto)
 
-> ✂️ Trecho não recebido — copiar do original. Acrescente ao modelo:
->
-> - [ ] 🛑 Registro do app verificado em ___/___: Play (nacional e estrangeiros), App Store, INPI, domínio
-> - [ ] 🛑 Pacote registrado na verificação de desenvolvedor Android
-> - [ ] 🛑 Ambiente de build registrado (`docs/REGISTRO-BUILDS.md`) — último build: ___
-> - [ ] Trilhas do modelo de negócio escolhidas (§M.0): ___ · IDs dos produtos: ___
-> - [ ] Checklists "No código" das trilhas implementados e testes da §M.7 feitos
-> - [ ] Declarações conferidas pela §M.9
+Copie para o projeto e marque conforme avança:
+
+```markdown
+## Publicação na Google Play — <NOME DO APP>
+- Pacote: `<br.com.empresa.app>` · Tipo de conta: pessoal/organização · Status de comerciante: ___
+- Trilhas do modelo de negócio (§M.0): ___ · IDs dos produtos: ___
+- [ ] 🛑 Registro do app verificado em ___/___: Play (nacional e estrangeiros), App Store, INPI, domínio
+- [ ] Conta criada e taxa paga (data)
+- [ ] Identidade verificada (data)
+- [ ] Telefone/e-mails verificados · [ ] Status de comerciante declarado
+- [ ] App criado na Console (data) · [ ] 🛑 Pacote registrado na verificação de desenvolvedor Android
+- [ ] Chave de upload com backup em 2 lugares
+- [ ] 🛑 Ambiente de build registrado (`docs/REGISTRO-BUILDS.md`) — último build: ___
+- [ ] Checklists "No código" das trilhas implementados e testes da §M.7 feitos
+- [ ] Teste interno publicado — versão ___ (data)
+- [ ] Política de Privacidade no ar (URL: ___) e dentro do app · [ ] Termos de Uso (se comerciante)
+- [ ] Conteúdo do app: login · anúncios · classificação · público-alvo · segurança dos dados · governo · finanças · saúde · permissões · ID de publicidade
+- [ ] Declarações conferidas pela §M.9
+- [ ] Categoria e contatos · [ ] Ficha da loja (textos, ícone, recurso gráfico, capturas de celular e tablets)
+- [ ] Produtos criados em Monetizar · [ ] AdMob vinculado e mensagens de consentimento publicadas
+- [ ] Teste fechado iniciado (data) com ___ testadores → 14 dias até ___
+- [ ] Acesso à produção solicitado/aprovado (datas)
+- [ ] Lançamento em produção (data) — gradual
+```
 
 ## Anexo A. Classificador: o app cabe em conta pessoal ou precisa de organização?
 
-> ✂️ Trecho não recebido — copiar do original.
+> Reconstruído em 09/11/2026 a partir das regras deste guia (o original estava incompleto). Confira na Central de
+> Ajuda ("Requisitos do Play Console", "Categorias de apps de saúde") e corrija aqui se algo mudou.
+
+| Tipo de app | Conta pessoal nova? | Observação |
+|---|---|---|
+| Clima, calculadora, lanterna, conversor, utilitários | ✅ Sim | — |
+| Jogos, entretenimento, música, fotos | ✅ Sim | Público infantil → Política para Famílias |
+| Produtividade, notas, listas, agenda, lembretes **gerais** | ✅ Sim | Lembrete de remédio **não** é "geral" (ver abaixo) |
+| Educação, cursos, quiz | ✅ Sim | Se for para crianças → Famílias |
+| Fitness, treino, contador de passos, água, sono (bem-estar) | ✅ Em geral | Sem diagnóstico, dose ou tratamento. Na dúvida, confira "Categorias de apps de saúde" |
+| Loja / catálogo / delivery de produtos físicos | ✅ Sim | Pagamento de produto físico pode ser fora da Play |
+| Ferramentas automotivas (OBD, scanner) | ✅ Em geral | Sem recursos financeiros |
+| **Lembrete/controle de medicamentos, adesão a tratamento** | ❌ Organização | Categoria médica, mesmo sem diagnóstico |
+| **Medicina, telessaúde, prontuário, pesquisa com pessoas** | ❌ Organização | Pode atrair regulação (ANVISA) |
+| **Finanças**: banco, empréstimo, investimento, cripto, pagamentos | ❌ Organização | Controle de gastos pessoal **sem** movimentar dinheiro: confira a declaração de recursos financeiros |
+| **VPN** (`VpnService`) | ❌ Organização | — |
+| **Governo** (feito por ou para órgão público) | ❌ Organização | — |
+
+**Roteiro para a IA classificar o app:**
+
+1. Leia o código: permissões, SDKs, telas, o que o app faz com dados de saúde, dinheiro, rede.
+2. Compare com a tabela acima e com as declarações do §6 (saúde §6.9, finanças §6.8, governo §6.7).
+3. Se qualquer função cai numa linha ❌ → organização (não "desmarque" a função para escapar).
+4. Se tudo cai em ✅ → pessoal serve; lembre do teste fechado (§8) e, se for remunerado, do status de comerciante
+   (§2.2) e da opção de CNPJ (§1.2).
+5. Registre a conclusão e o motivo no acompanhamento do projeto (§12).
 
 ## Anexo B. Tabela-mestra de imagens e textos
 
-> ✂️ Trecho não recebido — copiar do original.
+> Reconstruído em 09/11/2026 a partir das regras deste guia (o original estava incompleto). Os limites da loja estão
+> no §7; confira a tela da Console e corrija aqui se mudarem.
+
+**Loja (Play Console)**
+
+| Item | Tamanho / limite | Formato | Obrigatório |
+|---|---|---|---|
+| Nome do app | até 30 caracteres | texto | Sim |
+| Descrição curta | até 80 caracteres | texto | Sim |
+| Descrição completa | até 4000 caracteres | texto | Sim |
+| Notas da versão | até 500 caracteres por idioma | texto `<pt-BR>…</pt-BR>` | Por versão |
+| Nome do desenvolvedor | até 50 caracteres | texto | Sim |
+| Ícone | 512×512 px, até 1 MB | PNG 32 bits, sem transparência | Sim |
+| Recurso gráfico | 1024×500 px | PNG/JPG, sem transparência | Sim |
+| Capturas do celular | 2 a 8; 9:16 ou 16:9 exato; lados 320–3840 px (ideal 1080×1920) | PNG/JPG até 8 MB | Sim |
+| Capturas tablet 7" | até 8; 9:16; lados 320–3840 px (ex.: 1080×1920) | PNG/JPG | Se o app roda em tablet |
+| Capturas tablet 10" | até 8; 9:16; lados 1080–7680 px (ex.: 1620×2880) | PNG/JPG | Se o app roda em tablet |
+| Chromebook / TV / Wear OS / XR | conforme a tela da Console (TV: banner 1280×720) | PNG/JPG | Só se distribuir nesses formatos |
+| Vídeo | link do YouTube | público ou não listado, sem anúncios | Não |
+
+**Dentro do app (Android)**
+
+| Item | Tamanho | Observação |
+|---|---|---|
+| Ícone de origem | 1024×1024 px | Quadrado cheio; as ferramentas geram as densidades |
+| Ícone adaptativo (primeiro plano) | 432×432 px (108 dp), conteúdo na área segura central de 66 dp | Fundo em camada separada (cor ou imagem) |
+| Ícone monocromático (Android 13+) | 432×432 px, uma cor com transparência | Para ícones temáticos |
+| Ícone de notificação | 24 dp (96×96 px em xxxhdpi) | Branco com transparência; colorido vira quadrado branco |
+| Splash (Android 12+) | Ícone central até 288 dp (com fundo) ou 240 dp; área visível de 192 dp | Cor de fundo única |
+
+**Organização dos arquivos:** guarde as imagens finais da loja numa pasta do projeto (ex.: `store/`) e as fontes
+(telas originais, HTML das molduras) junto, para regenerar quando o nome ou as telas mudarem.
 
 ## Histórico do guia
 
 | Data | Mudança |
 |---|---|
-| nov/2026 | Versão original (publicação real do primeiro app). |
+| 03/11/2026 | Versão inicial, a partir da publicação real de um app (conta pessoal, Brasil): conta e verificações, status de comerciante, chaves e versões, teste interno, Conteúdo do app, ficha da loja, teste fechado, produção, atualizações e armadilhas. |
+| 03/11/2026 | Regra de manutenção ("guia vivo"). |
+| 04/11/2026 | §11: erros do teste fechado (versão sem pacote → "Adicionar da biblioteca"; intent para tela cheia fora do teste interno). §6.10: apps de lembrete respondem **Outro**. §8: sem 12 testadores (teste interno, grupos de troca, organização; nunca contas falsas). §7: regras exatas das capturas e tablets. |
+| nov/2026 | Mapa do caminho, §1.1 converter pessoal → organização, regra de apps de saúde/medicamento, Anexos A e B (versão colada, que chegou cortada). |
 | 09/11/2026 | Novas seções: §0.1 registro do app (nome, marca e registro de pacote obrigatório no Brasil desde 30/09/2026), §1.2 abrir CNPJ para app remunerado, §3.0 ambiente de build local (verificar e registrar sempre), §M monetização (anúncios, compras, doações, assinatura, app pago). Lições em §11. Itens 🛑 no mapa e no §2.7. |
 | 09/11/2026 | §M reescrito como trilhas de modelo de negócio (T0 grátis, T1 anúncios, T2 compra no app, T3 doações, T4 assinatura, T5 pago), com checklist "No código" para gerar o app, testes (M.7) e declarações por trilha (M.9). Guia passa a cobrir a geração do app, não só a publicação. |
 | 09/11/2026 | §11: scripts PowerShell em UTF-8 com BOM, stderr no PowerShell 5.1 e JDK fora do PATH no Windows. |
+| 09/11/2026 | Trechos cortados completados a partir da versão de 04/11 (fim do §8, §9, §10, tabela do §11, §12). Anexos A e B reconstruídos. Novas linhas no §11 (chave de outro app, pouca RAM, acknowledge, compra pendente). |
