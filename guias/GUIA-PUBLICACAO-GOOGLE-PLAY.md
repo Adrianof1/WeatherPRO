@@ -438,6 +438,12 @@ Obrigatório para contas pessoais criadas após nov/2023 antes da produção. Co
   e milhões de downloads. Pesquise a Play inteira, não só apps brasileiros (§0.1).
 - Expo `prebuild` adiciona permissões que o app não usa (armazenamento, `SYSTEM_ALERT_WINDOW`) e recria `android/`,
   apagando a assinatura configurada à mão (§3.0, §3.3).
+- Scripts `.ps1` com acentos ou travessão precisam ser salvos em **UTF-8 com BOM**. O Windows PowerShell 5.1 lê
+  arquivo sem BOM como ANSI: o "—" vira `â€”`, cujo último byte é uma aspa curva que fecha a string, e o script
+  inteiro dá erro de sintaxe ("Token inesperado"). No mesmo PowerShell 5.1, `$ErrorActionPreference =
+  "SilentlyContinue"` descarta o stderr de programas externos (`java -version` escreve no stderr).
+- No Windows, o JDK pode estar só no `JAVA_HOME` e fora do PATH: o Gradle funciona, mas `java` e `keytool` no
+  terminal não. Chame `"$env:JAVA_HOME\bin\keytool.exe"` nos scripts.
 - Builds locais de teste só para `arm64-v8a` são ótimas para velocidade, mas o AAB da loja deve incluir todas as
   arquiteturas (§3.0).
 
@@ -655,3 +661,4 @@ após a compra pela própria Play.
 | nov/2026 | Versão original (publicação real do primeiro app). |
 | 09/11/2026 | Novas seções: §0.1 registro do app (nome, marca e registro de pacote obrigatório no Brasil desde 30/09/2026), §1.2 abrir CNPJ para app remunerado, §3.0 ambiente de build local (verificar e registrar sempre), §M monetização (anúncios, compras, doações, assinatura, app pago). Lições em §11. Itens 🛑 no mapa e no §2.7. |
 | 09/11/2026 | §M reescrito como trilhas de modelo de negócio (T0 grátis, T1 anúncios, T2 compra no app, T3 doações, T4 assinatura, T5 pago), com checklist "No código" para gerar o app, testes (M.7) e declarações por trilha (M.9). Guia passa a cobrir a geração do app, não só a publicação. |
+| 09/11/2026 | §11: scripts PowerShell em UTF-8 com BOM, stderr no PowerShell 5.1 e JDK fora do PATH no Windows. |
