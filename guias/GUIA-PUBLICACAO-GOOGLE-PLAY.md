@@ -1,8 +1,9 @@
-# Guia — Publicar um app Android na Google Play pelo Play Console
+# Guia — Gerar e publicar um app Android na Google Play
 
 Guia reutilizável. Copie este arquivo para a raiz ou `docs/` de qualquer projeto de app Android. Ele foi escrito a
 partir da publicação real de um app (nov/2026) e serve para você seguir sozinho ou para qualquer IA te explicar o
-passo a passo.
+passo a passo. Use-o **desde a geração do app**: o modelo de negócio (§M) define o que o código precisa ter antes de
+chegar à loja.
 
 > **Para a IA que estiver lendo:** siga as etapas na ordem, uma de cada vez. Antes de cada resposta na Console,
 > confira no código do projeto o que o app realmente faz (permissões, SDKs, internet, login, anúncios, compras). As
@@ -11,8 +12,8 @@ passo a passo.
 > dúvida, peça para abrir o "Saiba mais" da própria tela. Não é aconselhamento jurídico.
 >
 > **Sempre, em todo projeto:** (1) verifique e registre o PC da build local (§3.0); (2) verifique o registro do app,
-> do nome e do pacote (§0.1); (3) se o app ganha dinheiro, escolha os caminhos de monetização (§M) antes de
-> preencher as declarações.
+> do nome e do pacote (§0.1); (3) antes de gerar o código, defina a trilha de modelo de negócio (§M: grátis, anúncios,
+> compra no app, doações, assinatura ou pago) e implemente o checklist "No código" de cada trilha escolhida.
 
 Legenda: 🔒 = decisão irreversível ou cara de mudar · ⚠️ = armadilha comum · ⏳ = pode levar horas/dias ·
 🛑 = ponto de atenção obrigatório (verificar em todo app)
@@ -47,7 +48,7 @@ informação antiga). Ao copiar o guia para outro projeto, copie também esta re
 - [9. Acesso à produção e lançamento](#9-acesso-à-produção-e-lançamento)
 - [10. Atualizações](#10-atualizações-cada-nova-versão)
 - [11. Armadilhas e lições aprendidas](#11-armadilhas-e-lições-aprendidas)
-- [M. Monetização: caminhos que o app pode seguir](#m-monetização-caminhos-que-o-app-pode-seguir)
+- [M. Modelo de negócio: trilhas para gerar e publicar o app](#m-modelo-de-negócio-trilhas-para-gerar-e-publicar-o-app)
 - [12. Modelo de acompanhamento](#12-modelo-de-acompanhamento-copiar-para-o-projeto)
 - [Anexo A. Classificador pessoal × organização](#anexo-a-classificador-o-app-cabe-em-conta-pessoal-ou-precisa-de-organização)
 - [Anexo B. Tabela-mestra de imagens e textos](#anexo-b-tabela-mestra-de-imagens-e-textos)
@@ -58,19 +59,20 @@ Siga na ordem. Cada passo aponta para a seção com os detalhes.
 
 | # | Passo | Onde | ⏳ |
 |---|---|---|---|
+| 0 | **Definir a trilha do modelo de negócio** (grátis, anúncios, compra no app, doações, assinatura, pago) antes de gerar o código | §M | — |
 | 1 | Classificar o app: pessoal ou organização? | §0 e Anexo A | — |
 | 2 | 🛑 Pesquisar o nome (Play + marcas, inclusive estrangeiros) e decidir o pacote 🔒 | §0.1 | — |
 | 3 | Organização: CNPJ, D-U-N-S e site verificado | §0, §1, §1.2 | dias a semanas |
 | 4 | Criar a conta e pagar US$ 25 | §1 | minutos |
 | 5 | Verificar identidade, telefone, e-mails e status de comerciante | §2 | horas a dias |
-| 6 | Se o app ganha dinheiro: escolher os caminhos de monetização | §M | — |
+| 6 | Implementar no código os checklists das trilhas escolhidas | §M.2 a §M.6 | — |
 | 7 | 🛑 Registrar o PC da build local | §3.0 | — |
 | 8 | No código: chave de upload com backup 🔒, versão, requisitos técnicos | §3 | — |
 | 9 | Publicar a Política de Privacidade (URL pública + dentro do app) e, se comerciante, os Termos | §3.4 | — |
 | 10 | Produzir as imagens nos tamanhos certos: ícone, recurso gráfico, capturas de celular e tablets | Anexo B, §7 | — |
 | 11 | Criar o app na Console (nome, idioma, grátis/pago 🔒, pacote 🔒) e conferir o registro do pacote 🛑 | §4, §0.1 | minutos |
 | 12 | Gerar o AAB assinado, registrar o build e enviar no teste interno | §3.0, §5 | ~1 h |
-| 13 | Preencher Conteúdo do app (todas as declarações) | §6 | — |
+| 13 | Preencher Conteúdo do app (todas as declarações) e testar as compras/anúncios | §6, §M.7, §M.9 | — |
 | 14 | Preencher a ficha da loja (textos + imagens do passo 10) | §7, Anexo B | — |
 | 15 | Conta pessoal: teste fechado com ≥ 12 testadores × 14 dias | §8 | 14+ dias |
 | 16 | Pedir acesso à produção e lançar (gradual) | §9 | ~7 dias de revisão |
@@ -316,7 +318,7 @@ Requisitos da Google:
 | Nome do app (até 30) | Nome + palavra-chave (ex.: "MEUAPP! Lembrete de X"). 🛑 Já pesquisado (§0.1)? |
 | Idioma padrão | Português (Brasil) |
 | App ou jogo | App |
-| Gratuito ou pago | 🔒 Grátis se houver compras no app/assinatura. Grátis nunca vira pago (§M) |
+| Gratuito ou pago | 🔒 Grátis se houver compras no app/assinatura. Grátis nunca vira pago (§M.0, T5) |
 | Declarações | Políticas, Play App Signing, exportação dos EUA (aceitar) |
 
 O formulário pede o nome do pacote (até 150 caracteres) — digite exatamente o `applicationId` do app, tudo
@@ -439,69 +441,193 @@ Obrigatório para contas pessoais criadas após nov/2023 antes da produção. Co
 - Builds locais de teste só para `arm64-v8a` são ótimas para velocidade, mas o AAB da loja deve incluir todas as
   arquiteturas (§3.0).
 
-## M. Monetização: caminhos que o app pode seguir
+## M. Modelo de negócio: trilhas para gerar e publicar o app
 
-Escolha antes de preencher as declarações: cada caminho muda o status de comerciante (§2.2), Conteúdo do app (§6),
-Política de Privacidade e Termos (§3.4). Os caminhos podem ser combinados (o mais comum em app grátis: anúncios +
-"remover anúncios" + doações).
+**Decida o modelo antes de gerar o código.** Cada trilha diz o que construir no app, o que criar na Console e quais
+declarações mudam. As trilhas se combinam: o app segue todas as que escolher.
 
-### M.1 Visão geral
+> **Para a IA que vai gerar o app:** antes de escrever código, pergunte ao usuário qual trilha (ou combinação) ele
+> quer e registre a escolha no acompanhamento do projeto (§12). Implemente o bloco "No código" de cada trilha
+> escolhida e confira as declarações pela tabela M.9. Se o modelo mudar depois, volte aqui: trocar de trilha mexe em
+> código, Console, Política de Privacidade e Termos.
 
-| Caminho | Como funciona | Exige | Taxa da Google |
-|---|---|---|---|
-| **Anúncios** (AdMob ou outra rede) | Banner, tela cheia, premiado, abertura do app, nativo | Conta AdMob, `app-ads.txt`, consentimento (UMP), declarações de anúncios e ID de publicidade | Nenhuma da Play (a rede fica com uma parte) |
-| **Compra única no app** (não consumível) | Ex.: "remover anúncios", "Premium vitalício", "pague um café" | Perfil de pagamentos, produtos criados na Console, Google Play Faturamento | 15% sobre o 1º US$ 1 milhão/ano (depois 30%)* |
-| **Consumíveis** | Ex.: doações de valor fixo, créditos, moedas | Igual à compra única; o app "consome" a compra para permitir de novo | Igual* |
-| **Assinatura** | Mensal/anual, com ou sem teste grátis | Produtos de assinatura, tela clara de preço/período/cancelamento | 15%* |
-| **App pago** | Paga para baixar | 🔒 Pago pode virar grátis, grátis **nunca** vira pago. Não combina bem com anúncios | Igual à compra única* |
-| **Doações** | Valores fixos (a Play não permite valor livre) | Produtos consumíveis (doação ao próprio dev é produto digital) | Igual* |
-| **Recompensado (rewarded)** | Usuário escolhe ver um anúncio em troca de algo | Igual a anúncios; sempre opcional e com a recompensa explicada antes | — |
+### M.0 Qual trilha?
 
-\* Confira a tabela de taxas vigente na Central de Ajuda e se a conta está inscrita no nível de 15%. Valores podem
-mudar; registre aqui se mudarem.
+| O app vai… | Trilha | 🔒 Decisão difícil de desfazer |
+|---|---|---|
+| Ser grátis, sem ganhar dinheiro | **T0 Grátis** | — |
+| Mostrar anúncios | **T1 Anúncios** | — |
+| Ser grátis e vender algo dentro dele (remover anúncios, Premium, recurso, créditos) | **T2 Grátis + compra no app** | Tipo de cada produto (único × consumível) |
+| Receber doações / "pague um café" | **T3 Doações** | — |
+| Cobrar mensalidade ou anuidade | **T4 Assinatura** | — |
+| Cobrar para baixar | **T5 Pago** | 🔒 Grátis nunca vira pago; pago pode virar grátis |
 
-### M.2 Anúncios — regras que mais causam problema
+Combinações comuns:
 
-- Use os **IDs de teste** em desenvolvimento e nunca clique nos próprios anúncios (o AdMob bloqueia a conta).
-- Tela cheia (interstitial) só em pausas naturais (troca de tela, fim de uma ação), nunca ao abrir/fechar o app de
-  surpresa, nem durante uma tarefa, com limite de frequência.
-- Banner sem cobrir conteúdo nem ficar colado em botões (cliques acidentais).
-- Anúncios não podem imitar a interface do app nem aparecer fora dele (tela de bloqueio, notificações).
-- **Consentimento (UMP):** configure a mensagem GDPR/estados dos EUA no AdMob (Privacidade e mensagens) e ofereça
-  "Privacidade dos anúncios" no app quando o SDK indicar que é exigido.
-- **`app-ads.txt`** na **raiz** do domínio informado como site na ficha (ex.: `https://seudominio.com/app-ads.txt`).
-  Subpasta (ex.: GitHub Pages de projeto) não vale.
-- Vincule o app à loja no AdMob depois do 1º envio; anúncios reais costumam demorar de 24 a 48 h para aparecer.
-- Público com menores de 13 → Política para Famílias: só SDKs de anúncio certificados para famílias, sem anúncios
-  personalizados.
-- Pagamento do AdMob: perfil de pagamento separado, informações fiscais dos EUA (formulário W-8), mínimo para saque.
+| Combinação | Para quem | Observação |
+|---|---|---|
+| T1 + T2 | App utilitário grátis | O clássico: anúncios + "remover anúncios / Premium" |
+| T1 + T2 + T3 | App utilitário com comunidade | Doação também libera o Premium (sem anúncios) como agradecimento |
+| T0/T1 + T4 | App com conteúdo ou serviço contínuo | Plano grátis limitado + assinatura |
+| T5 (+ T2) | App de nicho, profissional | Pago + extras opcionais. ⚠️ Pago + anúncios gera avaliação ruim |
 
-### M.3 Compras, doações e assinaturas — regras
+Valem para **todas** as trilhas que ganham dinheiro (T1 a T5):
 
-- Bens e recursos **digitais** usados no app (remover anúncios, Premium, doação ao desenvolvedor, créditos) devem
-  usar o **Google Play Faturamento**. ⚠️ Link de PIX/vaquinha/cartão dentro do app para apoiar o desenvolvedor é
-  pagamento fora da Play e pode remover o app. Exceções (produtos físicos, doações a instituições de caridade,
-  programas de faturamento alternativo de alguns países) têm regras próprias: confira a Política de Pagamentos antes.
-- Valor livre não existe: crie degraus fixos (ex.: R$ 5, 10, 20, 50, 100).
-- Ofereça **Restaurar compras**, mostre o preço da loja (localizado) e não prometa o que a compra não entrega.
-- Para testar: e-mail em *Teste de licença* (Configuração › Teste de licença) e app instalado pela faixa de teste.
-- Os produtos só podem ser criados **depois** de enviar um AAB que tenha a biblioteca de faturamento.
-- Serviços como RevenueCat simplificam (validação, histórico, restauração), mas também entram na Política de
-  Privacidade e na Segurança dos dados.
+- Status de **comerciante** (§2.2) e **Termos de Uso** publicados e com link no app (§3.4).
+- **Perfil de pagamentos** com conta bancária (Play para T2–T5, AdMob para T1) e informações fiscais (§1.2).
+- Política de Privacidade citando cada SDK de anúncio/compra.
+- ⚠️ Pagamento de bens **digitais** (remover anúncios, Premium, doação ao desenvolvedor, créditos, assinatura) só pelo
+  **Google Play Faturamento**. Link de PIX, vaquinha ou cartão dentro do app para isso pode remover o app. Exceções
+  (produto físico, doação a instituição de caridade, programas de faturamento alternativo de alguns países) têm
+  regras próprias: leia a Política de Pagamentos antes.
+- Taxa da Play sobre T2–T5: 15% sobre o primeiro US$ 1 milhão por ano (assinaturas: 15%). Confira a tabela vigente e
+  a inscrição no nível de 15% na Console; registre aqui se mudar.
 
-### M.4 Checklist por caminho escolhido
+### M.1 T0 — Grátis, sem monetização
 
-| Declaração/item | Anúncios | Compras/doações/assinatura | App pago |
-|---|---|---|---|
-| Status de comerciante (§2.2) | Comerciante | Comerciante | Comerciante |
-| Termos de Uso publicados e no app | Recomendado | **Sim** (reembolso, entrega) | Sim |
-| Conteúdo do app › Anúncios (§6.3) | Sim | — | — |
-| ID de publicidade (§6.13) | Sim | Só se usar SDK que coleta | — |
-| IARC (§6.4) | Responder anúncios | Responder **compras digitais** | — |
-| Segurança dos dados (§6.6) | IDs do aparelho, interações, diagnóstico (SDK) | Histórico de compras | — |
-| Política de Privacidade (§3.4) | Citar a rede de anúncios | Citar a loja e o serviço de compras | — |
-| Perfil de pagamentos com conta bancária | Na rede (AdMob) | **Sim** (Play) | **Sim** (Play) |
-| `app-ads.txt` | Sim | — | — |
+- **No código:** nada específico. Política de Privacidade ainda é obrigatória.
+- **Conta:** pode ser **não comerciante** se não distribuir no EEE nem no Reino Unido (§2.2).
+- Para monetizar depois, siga a trilha nova inteira (não é só "ligar" anúncios).
+
+### M.2 T1 — Anúncios
+
+**No código (gerar o app):**
+
+- [ ] SDK da rede (AdMob: `google_mobile_ads` no Flutter, `react-native-google-mobile-ads` no RN, Google Mobile Ads no
+      nativo) + App ID no manifesto.
+- [ ] **Consentimento antes de carregar anúncios** (UMP): pedir/atualizar o consentimento na abertura e só inicializar
+      o SDK quando `canRequestAds` for verdadeiro.
+- [ ] Botão **"Privacidade dos anúncios"** (configurações ou rodapé), visível quando o SDK indicar que é exigido.
+- [ ] **IDs de teste** em desenvolvimento; IDs reais só na build de loja (variável de ambiente ou config).
+- [ ] Banner em área própria, sem cobrir conteúdo nem encostar em botões.
+- [ ] Tela cheia (interstitial) só em pausas naturais (ex.: a cada N ações), com intervalo mínimo; **nunca** ao
+      abrir/fechar o app.
+- [ ] Recompensado (rewarded), se usar: sempre opcional, com a recompensa explicada antes.
+- [ ] Se combinar com T2/T3/T4: **não inicializar o SDK** para quem pagou (nem carregar banner escondido).
+- [ ] Funcionar sem anúncio (sem internet, sem consentimento, rede sem estoque): nunca travar a tela esperando um.
+
+**Na Console e na rede:**
+
+- [ ] Conta AdMob, app criado e unidades de anúncio; vincular à loja depois do 1º envio ⏳ (24 a 48 h para anúncios
+      reais).
+- [ ] AdMob › Privacidade e mensagens: publicar as mensagens GDPR e de estados dos EUA.
+- [ ] `app-ads.txt` na **raiz** do domínio informado como site na ficha (subpasta não vale).
+- [ ] Declarações: Anúncios = Sim (§6.3), ID de publicidade = Sim (§6.13), Segurança dos dados com IDs do aparelho,
+      interações e diagnóstico enviados pelo SDK (§6.6).
+
+**Armadilhas:** clicar nos próprios anúncios bloqueia a conta AdMob; público com menores de 13 exige SDKs
+certificados para famílias e anúncios não personalizados; anúncio na abertura do app é motivo comum de recusa.
+
+### M.3 T2 — Grátis + compra no app (única ou consumível)
+
+| Tipo de produto | Exemplo | Comportamento |
+|---|---|---|
+| Único (não consumível) | Remover anúncios, Premium vitalício, desbloquear recurso | Compra uma vez, vale para sempre, restaurável |
+| Consumível | Créditos, moedas, pacotes | Pode comprar de novo; o app consome a compra |
+
+🔒 O tipo de cada produto e o **ID** são definitivos: um ID apagado não pode ser reutilizado. Defina os IDs no código e
+na Console com o mesmo texto (ex.: `remover_anuncios`, `premium_vitalicio`).
+
+**No código (gerar o app):**
+
+- [ ] Biblioteca de faturamento na **versão mínima exigida pela Play no ano** (Play Billing Library direta,
+      RevenueCat, `in_app_purchase` no Flutter, `react-native-iap`…).
+- [ ] IDs dos produtos num arquivo de configuração único.
+- [ ] Preço **lido da loja** (já vem em reais e formatado); nunca escrever o preço fixo no app.
+- [ ] Tratar os estados: comprado, **cancelado** pelo usuário, **pendente** (⚠️ boleto e outros meios lentos no
+      Brasil: só liberar quando o status virar "comprado") e erro ("você não foi cobrado").
+- [ ] **Confirmar (acknowledge) toda compra em até 3 dias**, senão a Google reembolsa sozinha. Bibliotecas como
+      RevenueCat fazem isso; com a Billing Library direta, é você.
+- [ ] Consumir os consumíveis depois de entregar.
+- [ ] Botão **"Restaurar compras"**.
+- [ ] Guardar o direito (Premium) localmente para funcionar offline, e reconferir com a loja ao abrir.
+- [ ] Tela de vendas honesta: o que libera, preço da loja, "pagamento único" quando for.
+- [ ] Bloqueio dos recursos pagos num só lugar (ex.: `isPremium`), para não esquecer uma tela.
+- [ ] Opcional: validação no servidor (evita fraude em apps com valor alto).
+
+**Na Console:**
+
+- [ ] Monetizar › Produtos no app: criar os produtos ⚠️ só depois de enviar um AAB com a biblioteca de faturamento.
+- [ ] Configuração › Teste de licença: incluir os e-mails de teste (compras de teste não cobram).
+- [ ] Declarações: IARC com **compras digitais** (§6.4), Segurança dos dados com histórico de compras (§6.6).
+
+**Armadilhas:** esquecer o acknowledge (reembolsos misteriosos depois de 3 dias); tratar pendente como erro; produto
+único configurado como consumível na ferramenta de compras (o direito some ao reinstalar).
+
+### M.4 T3 — Doações / "pague um café"
+
+Doação ao **próprio desenvolvedor** é produto digital: segue a T2 com produtos **consumíveis**.
+
+**No código (gerar o app):**
+
+- [ ] Valores **fixos** (ex.: R$ 5, 10, 20, 50, 100). A Play não aceita valor livre.
+- [ ] Texto "apoie o desenvolvedor", não "doação beneficente" (não é caridade).
+- [ ] Agradecimento após a compra; opcional: liberar um benefício (ex.: Premium ou selo de apoiador). Se liberar,
+      diga isso antes da compra.
+- [ ] Mesmos estados, acknowledge/consumo e "Restaurar compras" da T2.
+- [ ] ⚠️ Nada de chave PIX, link de vaquinha ou "pague por fora" dentro do app.
+
+**Na Console:** igual à T2 (produtos consumíveis). Nos Termos: doações são voluntárias e o reembolso segue a política
+da Google Play.
+
+### M.5 T4 — Assinatura
+
+**No código (gerar o app):**
+
+- [ ] Produtos de assinatura com **planos base** (mensal, anual) e **ofertas** (teste grátis, preço introdutório).
+- [ ] Antes de assinar, mostrar claramente: preço, período, renovação automática, o que acontece depois do teste
+      grátis e como cancelar.
+- [ ] Botão **"Gerenciar assinatura"** abrindo a tela da Play
+      (`https://play.google.com/store/account/subscriptions?sku=<id>&package=<pacote>`).
+- [ ] Conferir o direito **a cada abertura** (assinatura expira, é cancelada, entra em período de carência ou em
+      suspensão de conta).
+- [ ] Tratar período de carência (ainda dá acesso) e suspensão (sem acesso; pedir para atualizar o pagamento).
+- [ ] Recomendado: servidor com notificações em tempo real (RTDN) ou um serviço como RevenueCat.
+- [ ] Acknowledge, pendente e "Restaurar compras" como na T2.
+
+**Na Console:** Monetizar › Assinaturas (planos base e ofertas), teste de licença (renovações aceleradas no teste).
+Declarações iguais à T2. Siga a política de assinaturas (sem esconder o preço, sem cancelamento difícil).
+
+### M.6 T5 — App pago
+
+**No código (gerar o app):** sem tela de compra para o app em si. Opcional: Play Integrity para detectar cópias.
+Não combine com anúncios.
+
+**Na Console:** 🔒 escolher "Pago" ao criar o app (§4); preço por país em Monetizar; perfil de pagamentos. Não há
+"teste grátis" nativo: para isso use T2 (versão grátis + desbloqueio). O usuário pode pedir reembolso rápido logo
+após a compra pela própria Play.
+
+### M.7 Testar antes de enviar para produção
+
+| Trilha | Teste mínimo |
+|---|---|
+| T1 | IDs de teste aparecem; consentimento aparece com região de teste (EEA); app funciona sem anúncio; quem pagou não vê nenhum |
+| T2/T3 | Comprar com conta de teste de licença; cancelar; simular pagamento lento (cartão de teste "aprova depois"); reinstalar e restaurar; esperar > 3 dias e ver que não houve reembolso automático |
+| T4 | Assinar, deixar renovar (no teste é acelerado), cancelar, ver o acesso acabar no fim do período |
+| T5 | Instalar pela faixa de teste com conta de testador |
+
+### M.8 Ordem sugerida ao gerar um app monetizado
+
+1. Escolher as trilhas (M.0) e os IDs dos produtos 🔒.
+2. Gerar o app com o bloqueio Premium num só lugar e os IDs de teste dos anúncios.
+3. Publicar a Política de Privacidade e os Termos (§3.4).
+4. Enviar o 1º AAB no teste interno (§5); só então criar os produtos e vincular o AdMob.
+5. Testar (M.7) e preencher as declarações (M.9).
+
+### M.9 Declarações por trilha
+
+| Declaração/item | T1 Anúncios | T2/T3 Compras e doações | T4 Assinatura | T5 Pago |
+|---|---|---|---|---|
+| Status de comerciante (§2.2) | Comerciante | Comerciante | Comerciante | Comerciante |
+| Termos de Uso publicados e no app | Recomendado | **Sim** | **Sim** | Sim |
+| Conteúdo do app › Anúncios (§6.3) | Sim | — | — | — |
+| ID de publicidade (§6.13) | Sim | Só se um SDK coletar | Idem | — |
+| IARC (§6.4) | Responder anúncios | **Compras digitais** | **Compras digitais** | — |
+| Segurança dos dados (§6.6) | IDs do aparelho, interações, diagnóstico | Histórico de compras | Histórico de compras | — |
+| Política de Privacidade (§3.4) | Citar a rede de anúncios | Citar a loja e o serviço de compras | Idem | — |
+| Perfil de pagamentos com conta bancária | Na rede (AdMob) | **Play** | **Play** | **Play** |
+| `app-ads.txt` | Sim | — | — | — |
+| Faixa de teste com teste de licença | — | Sim | Sim | Sim |
 
 ## 12. Modelo de acompanhamento (copiar para o projeto)
 
@@ -510,7 +636,9 @@ mudar; registre aqui se mudarem.
 > - [ ] 🛑 Registro do app verificado em ___/___: Play (nacional e estrangeiros), App Store, INPI, domínio
 > - [ ] 🛑 Pacote registrado na verificação de desenvolvedor Android
 > - [ ] 🛑 Ambiente de build registrado (`docs/REGISTRO-BUILDS.md`) — último build: ___
-> - [ ] Caminhos de monetização escolhidos (§M) e declarações conferidas (§M.4)
+> - [ ] Trilhas do modelo de negócio escolhidas (§M.0): ___ · IDs dos produtos: ___
+> - [ ] Checklists "No código" das trilhas implementados e testes da §M.7 feitos
+> - [ ] Declarações conferidas pela §M.9
 
 ## Anexo A. Classificador: o app cabe em conta pessoal ou precisa de organização?
 
@@ -526,3 +654,4 @@ mudar; registre aqui se mudarem.
 |---|---|
 | nov/2026 | Versão original (publicação real do primeiro app). |
 | 09/11/2026 | Novas seções: §0.1 registro do app (nome, marca e registro de pacote obrigatório no Brasil desde 30/09/2026), §1.2 abrir CNPJ para app remunerado, §3.0 ambiente de build local (verificar e registrar sempre), §M monetização (anúncios, compras, doações, assinatura, app pago). Lições em §11. Itens 🛑 no mapa e no §2.7. |
+| 09/11/2026 | §M reescrito como trilhas de modelo de negócio (T0 grátis, T1 anúncios, T2 compra no app, T3 doações, T4 assinatura, T5 pago), com checklist "No código" para gerar o app, testes (M.7) e declarações por trilha (M.9). Guia passa a cobrir a geração do app, não só a publicação. |

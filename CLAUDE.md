@@ -8,6 +8,8 @@
   `docs/REGISTRO-BUILDS.md`) antes e depois de cada build de loja. Nunca registre senhas.
 - 🛑 **Sempre** verifique o registro do app: nome/marca (Play nacional e estrangeiros, App Store, INPI) e registro do
   pacote na verificação de desenvolvedor Android.
-- App remunerado (anúncios + compras + doações): confira as declarações pelo §M.4 do guia.
+- Modelo de negócio do WeatherPRO: trilhas **T1 anúncios + T2 compra no app + T3 doações** (guia §M). Ao mexer em
+  anúncios ou compras, siga o checklist "No código" dessas trilhas e confira as declarações pela §M.9.
+- Em um app novo: defina a trilha (§M.0) **antes** de gerar o código.
 - Chaves de assinatura e senhas nunca vão para o Git. Variáveis em `.env` (ver `.env.example`).
 - Documentação e textos do app em português do Brasil.

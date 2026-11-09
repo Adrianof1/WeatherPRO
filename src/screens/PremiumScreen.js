@@ -42,6 +42,11 @@ export default function PremiumScreen({ theme }) {
     if (result.ok) {
       applyInfo(result.info);
       Alert.alert('☕ Muito obrigado!', thanks);
+    } else if (result.pending) {
+      Alert.alert(
+        'Pagamento pendente',
+        'Assim que o Google Play confirmar o pagamento, o Premium é liberado automaticamente. Pode fechar o app.'
+      );
     } else if (!result.cancelled) {
       Alert.alert('Não foi possível concluir', 'A compra não foi finalizada. Você não foi cobrado. Tente novamente.');
     }

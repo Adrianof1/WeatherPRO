@@ -58,7 +58,7 @@ export const PurchaseService = {
     };
   },
 
-  /** Retorna { ok, cancelled, info, error }. */
+  /** Retorna { ok, cancelled, pending, info, error }. */
   async buy(product) {
     if (!configured || !product) return { ok: false, error: 'indisponivel' };
     try {
@@ -66,6 +66,8 @@ export const PurchaseService = {
       return { ok: true, info: customerInfo };
     } catch (e) {
       if (e?.userCancelled) return { ok: false, cancelled: true };
+      // Boleto e outros meios lentos: a compra fica pendente e o Premium chega pelo listener quando for paga.
+      if (e?.code === RC.PURCHASES_ERROR_CODE?.PAYMENT_PENDING_ERROR) return { ok: false, pending: true };
       return { ok: false, error: e?.message || 'erro' };
     }
   },

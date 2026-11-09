@@ -236,17 +236,32 @@ Confira a página "Data disclosure" do AdMob e do RevenueCat se o formulário mu
   com outros usuários.
 - **Permissão de localização:** só em primeiro plano, não precisa da declaração de localização em segundo plano.
 
-## Monetização do WeatherPRO (guia §M)
+## Modelo de negócio: trilhas T1 + T2 + T3 (guia §M)
 
-| Caminho | No app | Status |
+Conferência do app contra os checklists "No código" do guia:
+
+| Trilha | Item | WeatherPRO |
 |---|---|---|
-| Anúncios | Banner nas telas + tela cheia a cada 3 buscas (intervalo mínimo de 3 min), nunca na abertura | 💻 Pronto; falta mensagem de consentimento e vínculo no AdMob |
-| Compra única | `cafe_premium`: remove anúncios + Premium | 💻 Pronto; falta criar no Play e RevenueCat |
-| Doações | `doacao_5/10/20/50/100` (consumíveis, valores fixos) | 💻 Pronto; idem |
-| Assinatura | — | Não usado |
-| Recompensado (rewarded) | — | Possível no futuro (ex.: ver um anúncio para liberar 48h por um dia) |
+| T1 Anúncios | Consentimento UMP antes de inicializar | ✅ `src/services/ads.js` |
+| | Botão "Privacidade dos anúncios" quando exigido | ✅ rodapé da tela de clima |
+| | IDs de teste em desenvolvimento | ✅ `__DEV__` usa `TestIds` |
+| | Tela cheia só em pausa natural, com intervalo | ✅ a cada 3 buscas, mínimo 3 min, nunca na abertura |
+| | Quem pagou não vê anúncios | ✅ SDK não inicia para Premium; banner e tela cheia checam `isPremium` |
+| | Funciona sem anúncio | ✅ |
+| T2 Compra no app | `cafe_premium` (único) | ✅ código · ⬜ criar no Play e RevenueCat |
+| | Preço lido da loja | ✅ `priceString` |
+| | Pendente (boleto) tratado | ✅ corrigido em 09/11: avisa que o Premium chega quando o pagamento confirmar |
+| | Acknowledge em 3 dias | ✅ feito pelo RevenueCat |
+| | Restaurar compras + Premium offline | ✅ |
+| | Bloqueio num só lugar | ✅ `PremiumContext` (`isPremium`) |
+| T3 Doações | `doacao_5/10/20/50/100` consumíveis, valores fixos | ✅ código · ⬜ criar no Play |
+| | Benefício dito antes da compra | ✅ "também remove os anúncios" |
+| | Sem PIX/link externo | ✅ |
 
-⚠️ Não colocar link de PIX/vaquinha no app para apoiar o desenvolvedor: tem que ser pelo faturamento da Play.
+⚠️ **RevenueCat:** no painel, marque `cafe_premium` como **não consumível** (Product type) e as doações como
+consumíveis. Se o café for consumido, o direito pode sumir ao reinstalar. Confira o nome exato da opção no painel.
+
+Possível no futuro: anúncio recompensado (ex.: ver um anúncio para liberar 48h de previsão por um dia).
 
 ## 6. Compras (RevenueCat)
 
