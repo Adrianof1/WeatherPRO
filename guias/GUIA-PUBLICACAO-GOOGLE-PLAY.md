@@ -1,0 +1,528 @@
+# Guia — Publicar um app Android na Google Play pelo Play Console
+
+Guia reutilizável. Copie este arquivo para a raiz ou `docs/` de qualquer projeto de app Android. Ele foi escrito a
+partir da publicação real de um app (nov/2026) e serve para você seguir sozinho ou para qualquer IA te explicar o
+passo a passo.
+
+> **Para a IA que estiver lendo:** siga as etapas na ordem, uma de cada vez. Antes de cada resposta na Console,
+> confira no código do projeto o que o app realmente faz (permissões, SDKs, internet, login, anúncios, compras). As
+> declarações precisam ser verdadeiras e coerentes entre si (Segurança dos dados × Política de Privacidade × Anúncios
+> × Classificação). Peça ao usuário o texto ou print de cada tela antes de orientar. Regras da Google mudam: na
+> dúvida, peça para abrir o "Saiba mais" da própria tela. Não é aconselhamento jurídico.
+>
+> **Sempre, em todo projeto:** (1) verifique e registre o PC da build local (§3.0); (2) verifique o registro do app,
+> do nome e do pacote (§0.1); (3) se o app ganha dinheiro, escolha os caminhos de monetização (§M) antes de
+> preencher as declarações.
+
+Legenda: 🔒 = decisão irreversível ou cara de mudar · ⚠️ = armadilha comum · ⏳ = pode levar horas/dias ·
+🛑 = ponto de atenção obrigatório (verificar em todo app)
+
+## 🔄 Guia vivo — regra de manutenção
+
+Este guia é atualizado sempre que surgir algo novo na publicação de qualquer app: tela nova ou renomeada na Play
+Console, política/prazo novo, recusa e o motivo, erro e a solução, atalho que funcionou. **Para a IA:** ao ajudar com
+a Play Console, se aprender algo que não está aqui (ou que mudou), atualize este arquivo na mesma sessão:
+
+- Texto genérico — sem nomes do app, e-mails, endereços ou outros dados pessoais.
+- Na seção certa (ou em "Armadilhas e lições", §11).
+- Uma linha no Histórico do guia (fim do arquivo) com data e o que mudou.
+
+Vale para tudo: tamanhos e formatos de imagem (Anexo B), limites de texto, nomes de telas e menus, prazos,
+formulários, recusas. Se algo aqui ficou errado/desatualizado, corrija e registre no histórico (não deixe a
+informação antiga). Ao copiar o guia para outro projeto, copie também esta regra (e adicione-a ao
+`CLAUDE.md`/instruções daquele projeto).
+
+## Sumário
+
+- [Mapa do caminho](#️-mapa-do-caminho-tudo-do-zero-à-loja)
+- [0. Antes de começar](#0-antes-de-começar) · [0.1 🛑 Registro do app: nome, marca e pacote](#01--registro-do-app-nome-marca-e-pacote-ponto-de-atenção)
+- [1. Criar a conta de desenvolvedor](#1-criar-a-conta-de-desenvolvedor) · [1.1 Converter pessoal → organização](#11-converter-a-conta-pessoal-em-organização) · [1.2 Abrir CNPJ para app remunerado](#12-abrir-cnpj-para-app-remunerado)
+- [2. Concluir as verificações da conta](#2-concluir-as-verificações-da-conta)
+- [3. Preparar o app para envio](#3-preparar-o-app-para-envio) · [3.0 🛑 Ambiente de build local](#30--ambiente-de-build-local-verificar-e-registrar-sempre)
+- [4. Criar o app na Console](#4-criar-o-app-na-console)
+- [5. Teste interno](#5-teste-interno)
+- [6. Configurar o app — "Conteúdo do app"](#6-configurar-o-app--conteúdo-do-app)
+- [7. Ficha da loja](#7-ficha-da-loja)
+- [8. Teste fechado](#8-teste-fechado)
+- [9. Acesso à produção e lançamento](#9-acesso-à-produção-e-lançamento)
+- [10. Atualizações](#10-atualizações-cada-nova-versão)
+- [11. Armadilhas e lições aprendidas](#11-armadilhas-e-lições-aprendidas)
+- [M. Monetização: caminhos que o app pode seguir](#m-monetização-caminhos-que-o-app-pode-seguir)
+- [12. Modelo de acompanhamento](#12-modelo-de-acompanhamento-copiar-para-o-projeto)
+- [Anexo A. Classificador pessoal × organização](#anexo-a-classificador-o-app-cabe-em-conta-pessoal-ou-precisa-de-organização)
+- [Anexo B. Tabela-mestra de imagens e textos](#anexo-b-tabela-mestra-de-imagens-e-textos)
+
+## 🗺️ Mapa do caminho: tudo, do zero à loja
+
+Siga na ordem. Cada passo aponta para a seção com os detalhes.
+
+| # | Passo | Onde | ⏳ |
+|---|---|---|---|
+| 1 | Classificar o app: pessoal ou organização? | §0 e Anexo A | — |
+| 2 | 🛑 Pesquisar o nome (Play + marcas, inclusive estrangeiros) e decidir o pacote 🔒 | §0.1 | — |
+| 3 | Organização: CNPJ, D-U-N-S e site verificado | §0, §1, §1.2 | dias a semanas |
+| 4 | Criar a conta e pagar US$ 25 | §1 | minutos |
+| 5 | Verificar identidade, telefone, e-mails e status de comerciante | §2 | horas a dias |
+| 6 | Se o app ganha dinheiro: escolher os caminhos de monetização | §M | — |
+| 7 | 🛑 Registrar o PC da build local | §3.0 | — |
+| 8 | No código: chave de upload com backup 🔒, versão, requisitos técnicos | §3 | — |
+| 9 | Publicar a Política de Privacidade (URL pública + dentro do app) e, se comerciante, os Termos | §3.4 | — |
+| 10 | Produzir as imagens nos tamanhos certos: ícone, recurso gráfico, capturas de celular e tablets | Anexo B, §7 | — |
+| 11 | Criar o app na Console (nome, idioma, grátis/pago 🔒, pacote 🔒) e conferir o registro do pacote 🛑 | §4, §0.1 | minutos |
+| 12 | Gerar o AAB assinado, registrar o build e enviar no teste interno | §3.0, §5 | ~1 h |
+| 13 | Preencher Conteúdo do app (todas as declarações) | §6 | — |
+| 14 | Preencher a ficha da loja (textos + imagens do passo 10) | §7, Anexo B | — |
+| 15 | Conta pessoal: teste fechado com ≥ 12 testadores × 14 dias | §8 | 14+ dias |
+| 16 | Pedir acesso à produção e lançar (gradual) | §9 | ~7 dias de revisão |
+| 17 | A cada versão nova: versionCode +1, registrar o build, notas, revisão | §10, §3.0 | horas a dias |
+| 18 | Algo deu errado? Veja as armadilhas e registre o aprendizado aqui | §11 | — |
+
+## 0. Antes de começar
+
+### 🚦 Primeira decisão: conta pessoal ou de organização?
+
+Responda antes de pagar a taxa. Errar aqui custa semanas (recusa, CNPJ, D-U-N-S, conversão).
+
+O app é de algum destes tipos? (desde 31/08/2024, contas novas precisam ser de organização para eles)
+
+- Serviços financeiros (banco, empréstimo, investimentos, carteira de criptomoedas…).
+- Apps de saúde, como os de medicina e de pesquisa com pessoas. ⚠️ O Google classifica como médico também o
+  lembrete/gerenciamento de medicamentos e adesão a tratamento — mesmo sem diagnóstico, cálculo de dose ou internet.
+- Apps que usam `VpnService`.
+- Apps governamentais (feitos por ou para órgãos públicos).
+
+→ **Sim:** abra a conta como organização (CNPJ + D-U-N-S + site; §1). Com conta pessoal o app é recusado ("Violação
+dos requisitos do Play Console"). → **Não:** conta pessoal serve (mas lembre do teste fechado obrigatório de 14 dias,
+§8).
+
+📋 Lista completa por tipo de app, com o roteiro para uma IA classificar o seu: Anexo A. Na dúvida, leia "Requisitos
+do Play Console" e "Categorias de apps de saúde" na Central de Ajuda e confira com o que o app realmente faz.
+
+| Item | Por quê |
+|---|---|
+| Conta Google dedicada ao desenvolvedor/empresa (ex.: `contato.suaempresa@gmail.com`) | O dono da Console; e-mail público na loja |
+| Cartão internacional | Taxa única de US$ 25 |
+| Documento oficial com foto + comprovante de residência recente (até ~3 meses, no seu nome) | Verificação de identidade. ⚠️ Comprovante antigo ou de outro nome é recusado |
+| Celular Android real | Verificação de acesso a dispositivo e testes |
+| Site/domínio (opcional, recomendado) | Hospedar a Política de Privacidade; dá para verificar pelo Google Search Console |
+| Decidir pessoal × organização (acima e §1) | Muda exigências, o que fica público e quais tipos de app você pode publicar |
+| Organização: CNPJ e número D-U-N-S ⏳ | O D-U-N-S é gratuito (Dun & Bradstreet), mas pode levar de dias a semanas — peça cedo |
+| 🔒 Decidir o nome do pacote (`applicationId`), ex.: `br.com.suaempresa.nomedoapp` | Nunca pode ser trocado depois do 1º envio. Use o domínio invertido |
+| 🛑 Verificar o registro do app (nome, marca e pacote) | Ver §0.1 |
+
+### 0.1 🛑 Registro do app: nome, marca e pacote (ponto de atenção)
+
+**Verificar em todo app novo, antes de investir em ícone, imagens e divulgação, e de novo antes do 1º envio.**
+Registre o resultado (data, onde pesquisou, o que achou) no acompanhamento do projeto (§12).
+
+**a) Nome e marca**
+
+| Onde pesquisar | Como |
+|---|---|
+| Google Play | Nome exato, variações (com/sem espaço, "Pro", "Plus", acentos) e tradução em inglês. ⚠️ Um app **estrangeiro** grande com o mesmo nome também conta (risco de recusa por falsificação de identidade e de reclamação de marca) |
+| App Store | Mesma busca (marcas costumam estar nas duas lojas) |
+| INPI (busca.inpi.gov.br › Marcas) | Classe 9 (software) e a classe do assunto do app (ex.: 44 saúde, 42 serviços de TI, 36 finanças) |
+| Domínio e redes | `.com.br`, `.com`, @ no Instagram/TikTok — ajuda a decidir se o nome é viável |
+
+Outro app publicado ou marca registrada com o mesmo nome obriga a trocar — e quanto mais tarde, mais caro (ficha,
+imagens, avaliações, divulgação). Palavras comuns são difíceis de registrar; nomes com personalidade ou marca mista
+(nome + logo) são mais fáceis. Registrar a marca no INPI é opcional para publicar, mas protege o nome quando o app
+der dinheiro (dá para pedir como pessoa física ou pelo CNPJ).
+
+**b) Registro do pacote (verificação de desenvolvedor Android)**
+
+Desde **30/09/2026**, no **Brasil** (e Indonésia, Singapura, Tailândia), apps instalados em aparelhos certificados
+precisam estar **registrados** por um desenvolvedor verificado: identidade verificada + nome do pacote + chave de
+assinatura. A expansão global está prevista para 2027.
+
+- App novo criado na Play Console (a partir de 30/03/2026): o pacote é registrado automaticamente ao criar o app.
+  Confira em Gerenciar conta (ou na tela que a Console indicar) se aparece como registrado.
+- ⚠️ Se o pacote **já circulou** em aparelhos Android antes (ex.: APK de teste instalado por arquivo), a Console pode
+  pedir prova de posse pelo fluxo manual: para pacote com instalações, enviar um APK assinado com a mesma chave.
+  Por isso, desde o primeiro APK de teste, assine com a sua chave de upload, não com a de debug pública do template.
+- Apps distribuídos fora da Play (site, APK direto) também precisam de registro para instalar normalmente no Brasil;
+  sem registro, só por `adb` ou pelo fluxo avançado.
+- Regras e telas mudam: confirme no blog oficial ("Android developer verification") e registre aqui o que mudou.
+
+## 1. Criar a conta de desenvolvedor
+
+`play.google.com/console` → escolher o tipo:
+
+| | Pessoal | Organização |
+|---|---|---|
+| Exige | Documento pessoal | CNPJ + número D-U-N-S (gratuito, Dun & Bradstreet) + documentos da empresa + site |
+| Nome exibido como responsável | Seu nome civil | Razão social |
+| ⚠️ Teste fechado obrigatório (12 testadores × 14 dias) antes da produção | Sim (contas pessoais novas) | Não |
+| Tipos restritos (finanças, saúde/medicina — inclui lembrete de remédio, VPN, governo) | ❌ Não pode publicar (conta nova) | ✅ Permitidos |
+| App remunerado (comerciante) | Endereço e telefone **residenciais** ficam públicos (a partir de mar/2027) | Aparece o endereço da empresa |
+
+Passos:
+
+1. Escolher o tipo → perfil para pagamentos (nome civil + endereço — 🔒 o nome fica travado após verificar).
+2. Questionário "Apps": nº de apps, se vai ganhar dinheiro, categorias. ⚠️ Marque só categorias reais. 🔒 Essa lista
+   não aparece depois em Detalhes da conta para editar. Numa conta pessoal, marcar categorias restritas (ex.: "Apps
+   de telessaúde ou medicina") gera recusa com a área "Developer Account" — e se o app é mesmo desse tipo, a conta
+   precisa ser de organização.
+3. Aceitar termos → pagar US$ 25.
+4. ⏳ Receber e-mail de verificação de identidade.
+
+### 1.1 Converter a conta pessoal em organização
+
+Possível na própria Console, sem criar outra conta nem transferir os apps (o assistente da Console indicou este
+caminho):
+
+1. Gerenciar conta › Detalhes da conta › Sobre você.
+2. Informar e verificar o site da organização (Google Search Console → pedido de verificação aprovado).
+3. Alterar tipo de conta.
+4. Criar ou selecionar um perfil para pagamentos empresarial com o D-U-N-S da empresa.
+5. Preencher os dados da organização, concluir a verificação ⏳ e vincular o perfil.
+6. Esperar ≥ 72 h antes de enviar nova versão para revisão.
+
+Efeitos: deixa de exigir o teste fechado de 14 dias para contas pessoais, a loja passa a mostrar a razão social e os
+tipos restritos ficam liberados. Revise o status de comerciante (o endereço exibido passa a ser o da empresa).
+
+### 1.2 Abrir CNPJ para app remunerado
+
+Para quem vai ganhar dinheiro com o app e ainda não tem empresa. Não é aconselhamento contábil: confirme com um
+contador.
+
+| Decisão | Notas |
+|---|---|
+| Esperar o CNPJ ou publicar já como pessoa física? | Se o CNPJ sai em poucas semanas, abrir a conta **direto como organização** evita o teste fechado de 14 dias e não expõe o endereço residencial. Se vai demorar, publique como pessoal e converta depois (§1.1) |
+| Tipo de empresa | ⚠️ Atividades de desenvolvimento de software costumam **não** ser permitidas no MEI; o comum é ME no Simples Nacional. Confira a lista de ocupações do MEI vigente e o CNAE com o contador |
+| CNAE | Ex.: desenvolvimento e licenciamento de programas, publicidade em meios digitais. O contador escolhe os códigos que cobrem anúncios e vendas digitais |
+| D-U-N-S ⏳ | Gratuito; peça logo depois do CNPJ (dias a semanas) |
+| Site + e-mail da empresa | Exigidos pela conta de organização; verifique o domínio no Google Search Console |
+| Conta bancária PJ | Para o perfil de pagamentos empresarial (Play e AdMob) |
+| Impostos | Receita da Play e do AdMob vem do exterior; o contador orienta a emissão de nota e o enquadramento. No AdMob, preencha as informações fiscais dos EUA (formulário W-8 da empresa) para evitar retenção maior |
+
+## 2. Concluir as verificações da conta
+
+Na página inicial aparece "Termine de configurar sua conta de desenvolvedor". Botão "Criar app" fica cinza até tudo
+estar ok.
+
+| # | Etapa | Onde | Dica |
+|---|---|---|---|
+| 2.1 | Verificar identidade ⏳ | Aviso azul › Mais detalhes | Dados idênticos ao documento. Recusa comum: comprovante de residência inválido/antigo → reenviar |
+| 2.2 | Status de comerciante (lei EEE/Reino Unido) | Gerenciar conta › Detalhes da conta › Sobre você | Ver tabela abaixo |
+| 2.3 | Verificar telefone de contato (SMS) | Detalhes da conta › Detalhes do contato | Só libera depois da identidade |
+| 2.4 | E-mails de contato e do perfil público | Detalhes do contato | Precisam do "verificado" |
+| 2.5 | Nome do desenvolvedor (público, até 50 caracteres) | Sobre você | Pode ser diferente do nome civil (ex.: marca). Revise a grafia! |
+| 2.6 | Site (opcional) | Sobre você › Site | Verificar no Google Search Console e aprovar o pedido |
+| 2.7 | 🛑 Verificação de desenvolvedor Android (nomes de pacote) | Gerenciar conta | Registrar o pacote se a Console pedir (§0.1 b) |
+
+**Status de comerciante — como decidir**
+
+- **Comerciante:** atividade com fins de negócio/lucro (app pago, compras, assinatura, anúncios, doações via
+  faturamento da Play). Exige link de Termos de Serviço e autocertificação. ⚠️ Conta pessoal comerciante: telefone e
+  endereço residencial ficam públicos para usuários de todos os países (a partir de mar/2027).
+- **Não comerciante:** permitido a quem não distribui no EEE nem no Reino Unido (texto oficial da Google). Público:
+  nome civil, e-mail e país.
+- Pode mudar a qualquer momento. ⚠️ Declarar errado de propósito pode suspender a conta. Se for não comerciante,
+  nunca marque países da Europa/Reino Unido na distribuição.
+- Prazo: contas novas — imediatamente; demais — até 01/02/2027.
+
+## 3. Preparar o app para envio
+
+### 3.0 🛑 Ambiente de build local: verificar e registrar sempre
+
+Quando o AAB é gerado no próprio PC (Android Studio/Gradle), **antes de cada build de loja** verifique a máquina e
+**registre** a configuração. Motivos: reproduzir a build meses depois, descobrir por que uma versão saiu diferente,
+trocar de PC sem perder a chave e provar qual chave assinou cada envio.
+
+**Verificar antes de compilar**
+
+| Item | Como conferir | Atenção |
+|---|---|---|
+| Sistema, RAM, disco livre | Configurações do sistema | Gradle + RN pedem ≥ 16 GB de RAM e ~20 GB livres |
+| Android Studio | Help › About | Anote a versão; atualizações podem mudar AGP/JDK |
+| JDK | `java -version`, `JAVA_HOME` | Use a versão que o projeto exige (RN/Expo atuais: JDK 17) |
+| Android SDK | SDK Manager ou pasta `ANDROID_HOME` | Platform e build-tools no nível do `compileSdk`/`targetSdk` exigido pela Play no ano |
+| NDK / CMake | SDK Manager › SDK Tools | Versão pedida pelo projeto (RN compila código nativo) |
+| Gradle / AGP | `gradle-wrapper.properties`, `./gradlew --version` | Não atualize no meio de um lançamento |
+| Node / npm / Expo / RN (projetos JS) | `node -v`, `npx expo --version` | Versões do `package-lock.json` (`npm ci`) |
+| Flutter (projetos Flutter) | `flutter --version`, `flutter doctor -v` | Canal e versão |
+| Chave de upload | Arquivo e propriedades de assinatura | Fora do Git, com backup em 2 lugares; senha só no gerenciador de senhas |
+| Git | Branch e commit | ⚠️ Não gere build de loja com alterações não commitadas |
+| Arquiteturas | `reactNativeArchitectures` / flags | Para teste rápido dá para usar só `arm64-v8a`; para a **loja**, gere o AAB com todas, senão aparelhos 32 bits ficam de fora |
+
+**Registrar (depois de cada build de loja)**: data, PC, versões acima, `versionName`/`versionCode`, commit, caminho e
+**SHA-256 do AAB**, e o **certificado SHA-256** de quem assinou (`keytool -printcert -jarfile app-release.aab`). Use
+um script para não esquecer nada (modelos: `scripts/registrar-ambiente-build.ps1` para Windows e `.sh` para
+Linux/macOS, gravando em `docs/REGISTRO-BUILDS.md`). Nunca registre senhas.
+
+⚠️ **Expo/React Native com `prebuild`:** a pasta `android/` é recriada a cada `expo prebuild`, e ajustes manuais no
+`build.gradle` (assinatura, memória) se perdem. Coloque a assinatura num config plugin que lê as credenciais do
+`~/.gradle/gradle.properties` do usuário, e a memória do Gradle em `expo-build-properties` ou no próprio plugin.
+
+### 3.1 Assinatura (chaves) 🔒
+
+| Chave | Uso | Onde guardar |
+|---|---|---|
+| Upload key (`upload-keystore.jks`) | Assina o AAB que você envia | Nunca no Git. Backup em 2 lugares (gerenciador de senhas + pendrive). Senha junto |
+| App signing key | Gerada e guardada pelo Google (Play App Signing — aceite o padrão) | No Google |
+| Chave de debug/dev | Testes locais | Pode ser compartilhada entre máquinas do time |
+
+Gerar a chave de upload:
+
+```bash
+keytool -genkeypair -v -keystore android/app/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+```
+
+(Em projetos Expo, gere fora de `android/`, ex.: `C:\dev\keys\`, porque essa pasta é recriada.)
+
+⚠️ O app instalado pela Play é assinado pela chave do Google → não instala por cima de um APK instalado por
+cabo/arquivo (e vice-versa). Para testar pela Play, desinstale o APK antes (faça backup dos dados de teste).
+
+### 3.2 Versão
+
+- `versionName` = o que o usuário vê (ex.: 0.9.0, 1.0.0).
+- `versionCode` = número interno; cada envio precisa ser maior que todos os anteriores (mesmo os não publicados).
+  Sugestão: MAJOR×10000 + MINOR×100 + PATCH (1.2.3 → 10203; 0.9.0 → 900).
+- Flutter: `version: 1.0.0+10000` no `pubspec.yaml`. ⚠️ `--split-per-abi` soma 1000/2000 ao código dos APKs (normal;
+  o AAB usa o valor do pubspec).
+- Expo com build local: `expo.android.versionCode` no `app.json` (o `autoIncrement` do EAS só vale na nuvem).
+
+### 3.3 Requisitos técnicos
+
+- Formato AAB (Android App Bundle). Flutter: `flutter build appbundle --release`. Gradle: `./gradlew bundleRelease`.
+- `targetSdk` no nível exigido pela Play no ano (a Console avisa).
+- Remover permissões não usadas (manifest final). ⚠️ Frameworks adicionam permissões sozinhos (o Expo coloca
+  armazenamento e `SYSTEM_ALERT_WINDOW`); confira o manifesto gerado e bloqueie as que sobram.
+- Rodar análise e testes antes de cada build.
+- Conferir quem assinou: `keytool -printcert -jarfile app-release.aab` (e anotar no registro, §3.0).
+
+### 3.4 Política de Privacidade (obrigatória para TODO app)
+
+Requisitos da Google:
+
+- URL pública, https, sem login, sem bloqueio por país, página web (não PDF).
+- Específica do app; diz o que coleta, por quê, com quem compartilha, retenção, direitos, contato.
+- Também precisa estar acessível dentro do app (ex.: tela "Privacidade" ou link em Configurações/Sobre). ⚠️ Muitos
+  esquecem.
+- Coerente com a Segurança dos dados (§6.6).
+- Teste a URL numa aba anônima no celular antes de colar. ⚠️ Sites SPA (React/Vite/Next) podem devolver a página
+  inicial com status 200 para qualquer caminho — confira o título da página, não só se "abriu". Arquivos estáticos
+  vão em `public/`.
+- App comerciante (§2.2): publique também os **Termos de Uso** (compras, reembolso, limites de responsabilidade) e
+  coloque o link no app.
+
+## 4. Criar o app na Console
+
+"Criar app":
+
+| Campo | Dica |
+|---|---|
+| Nome do app (até 30) | Nome + palavra-chave (ex.: "MEUAPP! Lembrete de X"). 🛑 Já pesquisado (§0.1)? |
+| Idioma padrão | Português (Brasil) |
+| App ou jogo | App |
+| Gratuito ou pago | 🔒 Grátis se houver compras no app/assinatura. Grátis nunca vira pago (§M) |
+| Declarações | Políticas, Play App Signing, exportação dos EUA (aceitar) |
+
+O formulário pede o nome do pacote (até 150 caracteres) — digite exatamente o `applicationId` do app, tudo
+minúsculo. 🔒 Não dá para trocar depois. (Em versões antigas da Console, o pacote era definido pelo primeiro AAB
+enviado.) 🛑 Depois de criar, confira se o pacote aparece como registrado (§0.1 b).
+
+O nome do app, ao contrário, pode ser trocado a qualquer momento (Ficha da loja); o pacote não precisa "combinar"
+com o nome.
+
+Categoria da loja (Aumentar número de usuários › Presença na loja › Configurações da loja): escolha a que descreve o
+app. ⚠️ Trocar "Medicina" por "Saúde e fitness" não muda o tipo do app: o que vale para a regra de organização é o
+que o app faz (declaração de saúde e cadastro da conta).
+
+## 5. Teste interno
+
+Rápido (minutos), até 100 testadores, sem revisão completa. Bom para o 1º envio.
+
+1. Testar e lançar › Testes › Teste interno › aba Testadores › criar lista de e-mails (contas Google usadas na Play
+   Store) + e-mail de feedback.
+2. Criar nova versão → (aceitar chave gerada pelo Google) → enviar o `.aab` → nome da versão (só interno, ex.:
+   `0.9.0 (900)`) → notas da versão:
+   ```
+   <pt-BR>
+   Texto do que há de novo (até 500 caracteres)
+   </pt-BR>
+   ```
+3. Próxima → Visualizar e confirmar (erros vermelhos bloqueiam; avisos amarelos em geral podem ser ignorados) →
+   Salvar e publicar.
+4. Aba Testadores → copiar link de participação → testadores aceitam o convite → baixam pela Play. ⏳ até ~1 h.
+5. Enquanto o app não for revisado, aparece com nome temporário "pacote (unreviewed)" — normal.
+
+## 6. Configurar o app — "Conteúdo do app"
+
+Painel › "Termine de configurar seu app". Cada item: responder → Salvar. As mudanças se acumulam em Visão geral da
+publicação e são enviadas juntas para revisão.
+
+| # | Item | Como responder (pense no que o app faz hoje) |
+|---|---|---|
+| 6.1 | Política de Privacidade | URL pública (§3.4) |
+| 6.2 | Detalhes do login (antigo "Acesso ao app") | Alguma parte é restrita (login, pagamento, PIN, biometria)? Se não → "Não". Se sim → forneça conta de teste e instruções (o revisor não cria contas nem paga) |
+| 6.3 | Anúncios | Tem SDK de anúncios (AdMob etc.) ou banners próprios? Sim → etiqueta "Contém anúncios". ⚠️ Mentir pode suspender |
+| 6.4 | Classificação de conteúdo (IARC) | Categoria: Jogo / Social / Todos os outros. Perguntas sobre violência, sexo, linguagem, conteúdo do usuário, conteúdo online, produtos com restrição de idade, localização, compras digitais. Refazer quando adicionar compras/anúncios |
+| 6.5 | Público-alvo | Faixas etárias. Incluir menores de 13 → Política para Famílias (bem mais rígida). App adulto: só 18+. A opção "restringir menores" é opcional |
+| 6.6 | Segurança dos dados | "Coletado" = sai do aparelho (para você ou terceiros, inclusive por SDKs). "Compartilhado" = vai para terceiros. Isenções: transferências iniciadas pelo usuário (ex.: ele mesmo compartilha um arquivo), processamento só no aparelho. Liste cada SDK e o que ele envia (Firebase, Analytics, Crashlytics, AdMob, RevenueCat…). Tem que bater com a Política de Privacidade |
+| 6.7 | Apps governamentais | Normalmente Não |
+| 6.8 | Recursos financeiros | Normalmente "não oferece" (assinatura/compra no app não conta como recurso financeiro) |
+| 6.9 | Apps de saúde | Marque só e tudo o que o app faz. ⚠️ Nunca marque "dispositivo médico" ou "suporte à decisão clínica" se não for — atrai regulação (no Brasil, ANVISA). ⚠️ "Controle de medicamentos e tratamentos" (lembrete, adesão) é categoria médica → exige conta de organização (§0). E nunca desmarque o que o app faz para escapar da regra: declaração falsa pode suspender a conta inteira (todos os apps) |
+| 6.10 | Declarações de permissões sensíveis (se aparecerem) | Tela cheia (`USE_FULL_SCREEN_INTENT`): a Play pergunta a funcionalidade principal (Despertador / Envio e recebimento de chamadas / Outro). Só despertador e chamadas ganham a permissão concedida na instalação. Se o app só usa um alarme (lembrete, agenda, remédio…), responda Outro — declarar "Despertador" sem ser o propósito principal é declaração imprecisa. Com "Outro", no Android 14+ o app precisa pedir a permissão ao usuário (`canUseFullScreenIntent()` → tela do sistema); sem ela, a notificação vira aviso flutuante (~60 s). Alarme exato: prefira `SCHEDULE_EXACT_ALARM` (usuário concede) a `USE_EXACT_ALARM` (restrita). Localização em 2º plano, SMS, contatos: formulários e vídeo |
+| 6.11 | Categoria e contatos | Categoria da loja, tags (até 5), e-mail público (obrigatório), telefone (opcional — deixe vazio para não expor), site |
+| 6.12 | Marketing externo | Pode deixar ligado (o Google divulga o app fora da Play, grátis) |
+| 6.13 | ID de publicidade | App com SDK de anúncios/analytics usa o ID → "Sim" e finalidade (publicidade, análise). A permissão `AD_ID` costuma vir do SDK |
+
+## 7. Ficha da loja
+
+Painel › "Configurar a página Detalhes do app".
+
+📐 Todos os tamanhos, formatos e limites em uma tabela só (inclusive ícones dentro do app, notificação, splash, TV,
+Wear OS e Chromebook): Anexo B.
+
+| Item | Especificação |
+|---|---|
+| Nome | até 30 caracteres |
+| Descrição curta | até 80 |
+| Descrição completa | até 4000. ⚠️ Só funções que existem na versão enviada (prometer o que não existe = rejeição por metadados enganosos). Sem nomes de concorrentes, sem marcas de terceiros, sem excesso de palavras-chave |
+| Ícone | 512×512 PNG, quadrado cheio sem transparência (a Play arredonda) |
+| Recurso gráfico (feature graphic) | 1024×500 PNG/JPG, sem transparência |
+| Capturas de tela do celular | 2 a 8, PNG/JPEG até 8 MB, proporção exatamente 16:9 ou 9:16, lados entre 320 e 3840 px. Para promoção: ≥ 4 com ≥ 1080 px (ex.: 1080×1920). ⚠️ Celulares modernos têm tela 20:9 (ex.: 1220×2712) — o print direto é recusado; recorte para 9:16 ou gere as capturas (ver dica abaixo) |
+| Capturas de tablet 7" | ⚠️ Aparecem obrigatórias (*) quando o app roda em tablets (padrão). Até 8; 9:16; lados 320–3840 px (ex.: 1080×1920 desenhado com ~600 dp de largura) |
+| Capturas de tablet 10" | Obrigatórias nas mesmas condições; até 8; 9:16; lados 1080–7680 px (ex.: 1620×2880 com ~810 dp de largura) |
+| Computador / Android XR | Opcionais (só se o app for distribuído nesses formatos) |
+| Vídeo (opcional) | link do YouTube público ou não listado, sem anúncios e sem restrição de idade |
+
+**Dica — capturas com moldura de marketing:** em vez da tela "crua", use fundo da marca + logo + uma frase curta de
+benefício + a tela real dentro de um celular/tablet desenhado. Converte melhor na loja. Dá para gerar com uma página
+HTML renderizada pelo Playwright/Chromium no tamanho exato (1080×1920; tablet 10" 1620×2880). Cuidados: título com
+altura fixa (senão o celular encolhe quando o texto quebra em 2 linhas e as imagens ficam desiguais); frases só com
+funções que existem na versão publicada; guarde as telas originais como fonte e regenere quando o nome ou a tela
+mudar.
+
+**Dica — gerar capturas sem celular (Flutter):** um teste temporário com `matchesGoldenFile` renderiza as telas reais
+com dados de exemplo no tamanho exato (`tester.view.physicalSize` + `devicePixelRatio`). Cuidados: carregar fontes
+reais com `FontLoader` (Roboto e MaterialIcons do cache do Flutter; uma fonte de emoji do sistema como fallback),
+senão aparecem blocos; usar `debugDisableShadows = false` (senão sombras viram contornos pretos); textos com
+`TextStyle` sem `fontFamily` caem na fonte de blocos do teste — prefira herdar do tema. Confira o tamanho final
+(arredondamentos podem dar 1 px a mais) e apague o teste depois.
+
+## 8. Teste fechado
+
+Obrigatório para contas pessoais criadas após nov/2023 antes da produção. Contas de organização não precisam.
+
+1. Testes › Teste fechado › criar faixa → Países/regiões (⚠️ coerente com o status de comerciante) → testadores
+   (lista de e-mails ou Grupo Google).
+2. Criar versão (pode reutilizar o AAB do interno ou enviar um novo com `versionCode` maior) → enviar para revisão ⏳.
+3. ≥ 12 testadores inscritos por ≥ 14 dias seguidos. Recrute 20+ (alguns desistem). Peça para manterem o app
+   instalado e usarem.
+4. Não há como pular para conta pessoal. Sem 12 pessoas: (a) use o teste interno (sem revisão, até 100 pessoas — não
+   conta para a produção) para já usar o app p…
+
+> ✂️ **Trecho não recebido.** A cópia que originou este arquivo chegou cortada aqui. Complete com o original
+> (repositório do primeiro app, `guias/GUIA-PUBLICACAO-GOOGLE-PLAY.md`) o resto do §8, os §9 a §12 e os Anexos A e
+> B, mantendo as seções novas deste arquivo (§0.1, §1.2, §3.0, §M e os acréscimos marcados com 🛑).
+
+## 9. Acesso à produção e lançamento
+
+> ✂️ Trecho não recebido — copiar do original.
+
+## 10. Atualizações (cada nova versão)
+
+> ✂️ Trecho não recebido — copiar do original. Acréscimo: a cada versão, rode o registro do ambiente de build (§3.0)
+> e confira se a chave que assinou é a mesma das versões anteriores (certificado SHA-256 igual).
+
+## 11. Armadilhas e lições aprendidas
+
+> ✂️ Trecho não recebido — copiar do original. Lições acrescentadas nesta cópia:
+
+- Nome comum em inglês (ex.: "<Assunto>Pro") pode já pertencer a um app estrangeiro grande, com o mesmo nome exato
+  e milhões de downloads. Pesquise a Play inteira, não só apps brasileiros (§0.1).
+- Expo `prebuild` adiciona permissões que o app não usa (armazenamento, `SYSTEM_ALERT_WINDOW`) e recria `android/`,
+  apagando a assinatura configurada à mão (§3.0, §3.3).
+- Builds locais de teste só para `arm64-v8a` são ótimas para velocidade, mas o AAB da loja deve incluir todas as
+  arquiteturas (§3.0).
+
+## M. Monetização: caminhos que o app pode seguir
+
+Escolha antes de preencher as declarações: cada caminho muda o status de comerciante (§2.2), Conteúdo do app (§6),
+Política de Privacidade e Termos (§3.4). Os caminhos podem ser combinados (o mais comum em app grátis: anúncios +
+"remover anúncios" + doações).
+
+### M.1 Visão geral
+
+| Caminho | Como funciona | Exige | Taxa da Google |
+|---|---|---|---|
+| **Anúncios** (AdMob ou outra rede) | Banner, tela cheia, premiado, abertura do app, nativo | Conta AdMob, `app-ads.txt`, consentimento (UMP), declarações de anúncios e ID de publicidade | Nenhuma da Play (a rede fica com uma parte) |
+| **Compra única no app** (não consumível) | Ex.: "remover anúncios", "Premium vitalício", "pague um café" | Perfil de pagamentos, produtos criados na Console, Google Play Faturamento | 15% sobre o 1º US$ 1 milhão/ano (depois 30%)* |
+| **Consumíveis** | Ex.: doações de valor fixo, créditos, moedas | Igual à compra única; o app "consome" a compra para permitir de novo | Igual* |
+| **Assinatura** | Mensal/anual, com ou sem teste grátis | Produtos de assinatura, tela clara de preço/período/cancelamento | 15%* |
+| **App pago** | Paga para baixar | 🔒 Pago pode virar grátis, grátis **nunca** vira pago. Não combina bem com anúncios | Igual à compra única* |
+| **Doações** | Valores fixos (a Play não permite valor livre) | Produtos consumíveis (doação ao próprio dev é produto digital) | Igual* |
+| **Recompensado (rewarded)** | Usuário escolhe ver um anúncio em troca de algo | Igual a anúncios; sempre opcional e com a recompensa explicada antes | — |
+
+\* Confira a tabela de taxas vigente na Central de Ajuda e se a conta está inscrita no nível de 15%. Valores podem
+mudar; registre aqui se mudarem.
+
+### M.2 Anúncios — regras que mais causam problema
+
+- Use os **IDs de teste** em desenvolvimento e nunca clique nos próprios anúncios (o AdMob bloqueia a conta).
+- Tela cheia (interstitial) só em pausas naturais (troca de tela, fim de uma ação), nunca ao abrir/fechar o app de
+  surpresa, nem durante uma tarefa, com limite de frequência.
+- Banner sem cobrir conteúdo nem ficar colado em botões (cliques acidentais).
+- Anúncios não podem imitar a interface do app nem aparecer fora dele (tela de bloqueio, notificações).
+- **Consentimento (UMP):** configure a mensagem GDPR/estados dos EUA no AdMob (Privacidade e mensagens) e ofereça
+  "Privacidade dos anúncios" no app quando o SDK indicar que é exigido.
+- **`app-ads.txt`** na **raiz** do domínio informado como site na ficha (ex.: `https://seudominio.com/app-ads.txt`).
+  Subpasta (ex.: GitHub Pages de projeto) não vale.
+- Vincule o app à loja no AdMob depois do 1º envio; anúncios reais costumam demorar de 24 a 48 h para aparecer.
+- Público com menores de 13 → Política para Famílias: só SDKs de anúncio certificados para famílias, sem anúncios
+  personalizados.
+- Pagamento do AdMob: perfil de pagamento separado, informações fiscais dos EUA (formulário W-8), mínimo para saque.
+
+### M.3 Compras, doações e assinaturas — regras
+
+- Bens e recursos **digitais** usados no app (remover anúncios, Premium, doação ao desenvolvedor, créditos) devem
+  usar o **Google Play Faturamento**. ⚠️ Link de PIX/vaquinha/cartão dentro do app para apoiar o desenvolvedor é
+  pagamento fora da Play e pode remover o app. Exceções (produtos físicos, doações a instituições de caridade,
+  programas de faturamento alternativo de alguns países) têm regras próprias: confira a Política de Pagamentos antes.
+- Valor livre não existe: crie degraus fixos (ex.: R$ 5, 10, 20, 50, 100).
+- Ofereça **Restaurar compras**, mostre o preço da loja (localizado) e não prometa o que a compra não entrega.
+- Para testar: e-mail em *Teste de licença* (Configuração › Teste de licença) e app instalado pela faixa de teste.
+- Os produtos só podem ser criados **depois** de enviar um AAB que tenha a biblioteca de faturamento.
+- Serviços como RevenueCat simplificam (validação, histórico, restauração), mas também entram na Política de
+  Privacidade e na Segurança dos dados.
+
+### M.4 Checklist por caminho escolhido
+
+| Declaração/item | Anúncios | Compras/doações/assinatura | App pago |
+|---|---|---|---|
+| Status de comerciante (§2.2) | Comerciante | Comerciante | Comerciante |
+| Termos de Uso publicados e no app | Recomendado | **Sim** (reembolso, entrega) | Sim |
+| Conteúdo do app › Anúncios (§6.3) | Sim | — | — |
+| ID de publicidade (§6.13) | Sim | Só se usar SDK que coleta | — |
+| IARC (§6.4) | Responder anúncios | Responder **compras digitais** | — |
+| Segurança dos dados (§6.6) | IDs do aparelho, interações, diagnóstico (SDK) | Histórico de compras | — |
+| Política de Privacidade (§3.4) | Citar a rede de anúncios | Citar a loja e o serviço de compras | — |
+| Perfil de pagamentos com conta bancária | Na rede (AdMob) | **Sim** (Play) | **Sim** (Play) |
+| `app-ads.txt` | Sim | — | — |
+
+## 12. Modelo de acompanhamento (copiar para o projeto)
+
+> ✂️ Trecho não recebido — copiar do original. Acrescente ao modelo:
+>
+> - [ ] 🛑 Registro do app verificado em ___/___: Play (nacional e estrangeiros), App Store, INPI, domínio
+> - [ ] 🛑 Pacote registrado na verificação de desenvolvedor Android
+> - [ ] 🛑 Ambiente de build registrado (`docs/REGISTRO-BUILDS.md`) — último build: ___
+> - [ ] Caminhos de monetização escolhidos (§M) e declarações conferidas (§M.4)
+
+## Anexo A. Classificador: o app cabe em conta pessoal ou precisa de organização?
+
+> ✂️ Trecho não recebido — copiar do original.
+
+## Anexo B. Tabela-mestra de imagens e textos
+
+> ✂️ Trecho não recebido — copiar do original.
+
+## Histórico do guia
+
+| Data | Mudança |
+|---|---|
+| nov/2026 | Versão original (publicação real do primeiro app). |
+| 09/11/2026 | Novas seções: §0.1 registro do app (nome, marca e registro de pacote obrigatório no Brasil desde 30/09/2026), §1.2 abrir CNPJ para app remunerado, §3.0 ambiente de build local (verificar e registrar sempre), §M monetização (anúncios, compras, doações, assinatura, app pago). Lições em §11. Itens 🛑 no mapa e no §2.7. |

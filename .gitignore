@@ -41,3 +41,7 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+# Chaves de assinatura (backup fora do Git!)
+*.keystore
+!debug.keystore
+keystore.properties

@@ -27,6 +27,22 @@ Grátis 🔒 (tem compras no app; grátis nunca vira pago).
 **Status de comerciante:** o app tem anúncios e compras → **comerciante**. Exige link de Termos de Serviço
 (💻 `docs/termos.html`) e, em conta pessoal, deixa telefone e endereço públicos (a partir de mar/2027).
 
+### CNPJ: app remunerado, empresa ainda em abertura
+
+O WeatherPRO é **remunerado** (anúncios + café + doações). Enquanto o CNPJ não sai, dá para seguir de dois jeitos
+(detalhes no guia §1.2):
+
+| | Esperar o CNPJ e abrir conta de **organização** | Publicar já como **pessoa física** e converter depois |
+|---|---|---|
+| Teste fechado 12 × 14 dias | Não precisa | Precisa |
+| Endereço/telefone na loja (comerciante) | Da empresa | **Residencial** (público a partir de mar/2027) |
+| Tempo | CNPJ + D-U-N-S (dias a semanas) | Imediato |
+| Depois | — | Converter (guia §1.1); o app continua o mesmo |
+
+Recomendação: **se o CNPJ sair em até ~1 mês, espere e abra como organização**. Nesse meio-tempo dá para fazer a
+build, as imagens, o Pages e o AdMob. Confira com o contador se a atividade cabe no MEI ou precisa de ME, e peça o
+D-U-N-S assim que tiver o CNPJ.
+
 ## 0. Regra das contas pessoais novas
 
 Se a sua conta de desenvolvedor é **pessoal** e foi criada depois de nov/2023, o Google exige um **teste fechado
@@ -67,22 +83,76 @@ vibração, mais `ACCESS_NETWORK_STATE`, `WAKE_LOCK` e `AD_ID` das bibliotecas d
 `READ/WRITE_EXTERNAL_STORAGE` e `SYSTEM_ALERT_WINDOW`, que o app não usa; agora estão em
 `android.blockedPermissions` no `app.json`.
 
-`eas.json` já está pronto para produção: gera **AAB**, incrementa o `versionCode` sozinho e envia para a faixa
-**interna** como rascunho.
+### Build local (Android Studio no PC) — caminho principal
 
-```bash
-npm i -g eas-cli
-eas login
-eas env:create --name EXPO_PUBLIC_WEATHER_API_KEY --value SUA_CHAVE --environment production --visibility sensitive
-eas env:create --name EXPO_PUBLIC_REVENUECAT_ANDROID_KEY --value goog_xxx --environment production
-eas build -p android --profile production   # na 1ª vez, deixe o EAS gerar a keystore (responda "Yes")
+**🛑 Antes de cada build de loja, registre o PC** (guia §3.0). Na raiz do projeto, no PowerShell:
+
+```powershell
+.\scripts\registrar-ambiente-build.ps1 -Observacao "antes da build 3.1.0"
 ```
 
-- A keystore fica guardada no EAS. Baixe uma cópia (`eas credentials`) e guarde fora do PC. **Perder a chave =
-  não conseguir atualizar o app.**
+O script grava Windows, Android Studio, JDK, SDK/NDK, Node, Expo, Gradle, commit e se a chave está configurada em
+`docs/REGISTRO-BUILDS.md`. Commite esse arquivo junto com a versão.
+
+**1. Chave de upload (uma vez só) 🔒**
+
+```powershell
+mkdir C:\dev\keys
+keytool -genkeypair -v -keystore C:\dev\keys\weatherpro-upload.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+```
+
+Faça backup do `.jks` e da senha em 2 lugares (gerenciador de senhas + pendrive). Depois crie ou edite
+`C:\Users\<você>\.gradle\gradle.properties` (fora do projeto, nunca no Git):
+
+```properties
+WEATHERPRO_UPLOAD_STORE_FILE=C:/dev/keys/weatherpro-upload.jks
+WEATHERPRO_UPLOAD_STORE_PASSWORD=sua_senha
+WEATHERPRO_UPLOAD_KEY_ALIAS=upload
+WEATHERPRO_UPLOAD_KEY_PASSWORD=sua_senha
+```
+
+💻 O plugin `plugins/withReleaseSigning.js` lê essas propriedades em todo `prebuild`, então a assinatura não se perde
+quando a pasta `android/` é recriada. Sem elas, a release sai com a chave de debug e o Gradle avisa.
+
+**2. Gerar o AAB**
+
+```powershell
+npm ci
+npx expo prebuild --platform android --clean
+cd android
+.\gradlew bundleRelease
+# AAB: android\app\build\outputs\bundle\release\app-release.aab
+```
+
+- Para a **loja**, não use `-PreactNativeArchitectures=arm64-v8a`: o AAB precisa de todas as arquiteturas. Esse
+  atalho continua bom para APK de teste rápido (`assembleRelease`).
+- `prebuild --clean` apaga o ajuste de memória em `android\gradle.properties`. Se faltar memória, ponha
+  `org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g` no seu `~\.gradle\gradle.properties`, que vale para todos os
+  projetos.
+- A cada envio, **aumente `expo.android.versionCode`** no `app.json` (1, 2, 3…). O `autoIncrement` do `eas.json` só
+  vale para build na nuvem.
+
+**3. Registrar o artefato**
+
+```powershell
+cd ..
+.\scripts\registrar-ambiente-build.ps1 -Artefato android\app\build\outputs\bundle\release\app-release.aab -Observacao "3.1.0 (versionCode 1) teste interno"
+```
+
+Confira no registro: "Assinado por" **não** pode ser `Android Debug`, e o certificado SHA-256 deve ser o mesmo em
+todas as versões.
+
 - No Play Console, aceite a **Assinatura de apps do Google Play** (padrão).
-- O primeiro AAB precisa ser enviado **manualmente** no Play Console. Depois dá para usar `eas submit`
-  (exige uma conta de serviço do Google Cloud com acesso ao Play Console).
+- 🛑 Depois de criar o app, confira se o pacote `com.adrianoferreira.weatherpro` aparece como **registrado**
+  (verificação de desenvolvedor Android, obrigatória no Brasil desde 30/09/2026). Esse pacote já foi instalado como
+  APK de teste assinado com a chave de debug. Se a Console pedir prova de posse, siga o fluxo manual e anote aqui o
+  que aconteceu.
+
+### Build na nuvem (EAS) — alternativa
+
+`eas.json` está pronto (AAB, `versionCode` automático, envio para o teste interno). Use `eas build -p android
+--profile production` e as variáveis com `eas env:create` (ver README). Se usar EAS, a chave fica guardada lá: não
+misture com a chave local sem planejar, porque todas as versões precisam da mesma chave de upload.
 
 ## 4. Ficha da loja (textos prontos)
 
@@ -165,6 +235,18 @@ Confira a página "Data disclosure" do AdMob e do RevenueCat se o formulário mu
 - **Classificação (IARC):** responda "sim" para compras digitais e anúncios; "não" para compartilhar localização
   com outros usuários.
 - **Permissão de localização:** só em primeiro plano, não precisa da declaração de localização em segundo plano.
+
+## Monetização do WeatherPRO (guia §M)
+
+| Caminho | No app | Status |
+|---|---|---|
+| Anúncios | Banner nas telas + tela cheia a cada 3 buscas (intervalo mínimo de 3 min), nunca na abertura | 💻 Pronto; falta mensagem de consentimento e vínculo no AdMob |
+| Compra única | `cafe_premium`: remove anúncios + Premium | 💻 Pronto; falta criar no Play e RevenueCat |
+| Doações | `doacao_5/10/20/50/100` (consumíveis, valores fixos) | 💻 Pronto; idem |
+| Assinatura | — | Não usado |
+| Recompensado (rewarded) | — | Possível no futuro (ex.: ver um anúncio para liberar 48h por um dia) |
+
+⚠️ Não colocar link de PIX/vaquinha no app para apoiar o desenvolvedor: tem que ser pelo faturamento da Play.
 
 ## 6. Compras (RevenueCat)
 

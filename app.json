@@ -66,7 +66,8 @@
           "androidAppId": "ca-app-pub-4541742841922750~8099858895",
           "iosAppId": "ca-app-pub-4541742841922750~8099858895"
         }
-      ]
+      ],
+      "./plugins/withReleaseSigning"
     ]
   }
 }
