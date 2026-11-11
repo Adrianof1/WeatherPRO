@@ -46,7 +46,36 @@ Anúncios e compras usam módulos nativos: **não funcionam no Expo Go**. Use um
 > O Google Play não permite valor livre em compra no app; por isso as doações têm valores fixos. Qualquer
 > doação libera o Premium, assim como o café.
 
-## Chaves na build (EAS)
+## Build para a Play Store (local, no PC com Android Studio)
+
+Passo a passo completo em [`PUBLICACAO.md`](PUBLICACAO.md) §3. Resumo:
+
+```powershell
+.\scripts\registrar-ambiente-build.ps1 -Observacao "antes da build"   # registra o PC (obrigatório)
+npm ci
+npx expo prebuild --platform android --clean
+cd android; .\gradlew bundleRelease; cd ..
+.\scripts\registrar-ambiente-build.ps1 -Artefato android\app\build\outputs\bundle\release\app-release.aab
+```
+
+- A assinatura de release vem do plugin `plugins/withReleaseSigning.js`, que lê a chave de upload do
+  `~/.gradle/gradle.properties` (fora do Git). Sem ela, a release sai com a chave de debug, que a Play recusa.
+- O `.env` precisa existir no PC da build: as chaves `EXPO_PUBLIC_*` entram no app na hora do bundle.
+- Aumente `expo.android.versionCode` no `app.json` a cada envio.
+- O registro de cada build fica em [`docs/REGISTRO-BUILDS.md`](docs/REGISTRO-BUILDS.md).
+
+## Documentação
+
+| Arquivo | Para quê |
+|---|---|
+| [`PROJETO.md`](PROJETO.md) | Estado do projeto e o que falta |
+| [`PUBLICACAO.md`](PUBLICACAO.md) | Respostas específicas do WeatherPRO para a Play Store |
+| [`guias/GUIA-PUBLICACAO-GOOGLE-PLAY.md`](guias/GUIA-PUBLICACAO-GOOGLE-PLAY.md) | Guia genérico para gerar e publicar apps (trilhas de modelo de negócio, §M) |
+| [`CLAUDE.md`](CLAUDE.md) | Regras para IA neste projeto |
+
+Política de privacidade e termos: `voltzsi.com.br/weatherpro/privacidade.html` e `termos.html`.
+
+## Chaves na build na nuvem (EAS, alternativa)
 
 O EAS não lê o `.env` (ele está no `.gitignore`). Crie as variáveis na nuvem:
 
@@ -58,12 +87,14 @@ eas env:create --name EXPO_PUBLIC_REVENUECAT_ANDROID_KEY --value goog_xxx --envi
 (repita para `preview` e `development`). Variáveis `EXPO_PUBLIC_*` ficam no app instalado; restrinja a chave do
 OpenWeather no painel deles.
 
-## Build
+## Build na nuvem (EAS, alternativa)
 
 ```bash
 npm run build:test   # APK de teste
 npm run build:prod   # AAB para a Play Store
 ```
+
+⚠️ Não misture chave de upload do EAS com a chave local: todas as versões na Play precisam da mesma chave.
 
 ---
 
