@@ -18,6 +18,7 @@ import WeatherScreen from './src/screens/WeatherScreen';
 import AlertsScreen from './src/screens/AlertsScreen';
 import FloodScreen from './src/screens/FloodScreen';
 import PremiumScreen from './src/screens/PremiumScreen';
+import { expo as appConfig } from './app.json';
 
 export default function App() {
   return (
@@ -128,7 +129,7 @@ function Main() {
         <View style={styles.header}>
           <View>
             <Text style={styles.brand}>Weather<Text style={{ color: theme.accent }}>PRO</Text></Text>
-            <Text style={styles.brandSub}>v3.0{isPremium ? ' • Premium' : ''}</Text>
+            <Text style={styles.brandSub}>v{appConfig.version}{isPremium ? ' • Premium' : ''}</Text>
           </View>
           <TouchableOpacity style={styles.refreshBtn} onPress={onRefresh} accessibilityLabel="Atualizar">
             <Ionicons name="refresh" size={18} color="rgba(255,255,255,0.7)" />

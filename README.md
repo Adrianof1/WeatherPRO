@@ -1,4 +1,4 @@
-# 🌦️ WeatherPRO v3.0
+# 🌦️ WeatherPRO 1.0.1
 
 App de previsão do tempo para Android e iOS (React Native + Expo SDK 54).
 

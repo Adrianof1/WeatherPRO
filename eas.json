@@ -1,7 +1,7 @@
 {
   "cli": {
     "version": ">= 7.0.0",
-    "appVersionSource": "remote"
+    "appVersionSource": "local"
   },
   "build": {
     "development": {
@@ -26,7 +26,6 @@
       "env": {
         "NPM_CONFIG_LEGACY_PEER_DEPS": "true"
       },
-      "autoIncrement": true,
       "android": {
         "buildType": "app-bundle"
       }

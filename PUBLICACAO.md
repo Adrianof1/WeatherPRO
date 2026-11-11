@@ -49,7 +49,7 @@ Library 8 via RevenueCat, permissões limpas), mas faltam itens que bloqueiam a 
 
 **✅ Já pronto**
 - Código das trilhas T1/T2/T3 conferido (tabela abaixo), pagamento pendente tratado.
-- `targetSdk`/`compileSdk` 36, AAB configurado, `versionCode` 1, permissões não usadas bloqueadas.
+- `targetSdk`/`compileSdk` 36, AAB configurado, `versionCode` 10001 (versão 1.0.1), permissões não usadas bloqueadas.
 - Plugin de assinatura (`plugins/withReleaseSigning.js`), script de registro do PC (testado no Windows).
 - Política, Termos e `app-ads.txt` escritos; links dentro do app; ícone 512 e recurso gráfico 1024×500.
 - Textos da ficha e respostas de Conteúdo do app (seções 4 e 5).
@@ -140,7 +140,7 @@ vibração, mais `ACCESS_NETWORK_STATE`, `WAKE_LOCK` e `AD_ID` das bibliotecas d
 **🛑 Antes de cada build de loja, registre o PC** (guia §3.0). Na raiz do projeto, no PowerShell:
 
 ```powershell
-.\scripts\registrar-ambiente-build.ps1 -Observacao "antes da build 3.1.0"
+.\scripts\registrar-ambiente-build.ps1 -Observacao "antes da build 1.0.1"
 ```
 
 O script grava Windows, Android Studio, JDK, SDK/NDK, Node, Expo, Gradle, commit e se a chave está configurada em
@@ -181,14 +181,14 @@ cd android
 - `prebuild --clean` apaga o ajuste de memória em `android\gradle.properties`. Se faltar memória, ponha
   `org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g` no seu `~\.gradle\gradle.properties`, que vale para todos os
   projetos.
-- A cada envio, **aumente `expo.android.versionCode`** no `app.json` (1, 2, 3…). O `autoIncrement` do `eas.json` só
-  vale para build na nuvem.
+- A cada envio, **aumente `expo.android.versionCode`** no `app.json` pela fórmula do guia §3.2 (1.0.1 → 10001, 1.0.2 → 10002, 1.1.0 → 10100). O `eas.json` usa o mesmo valor
+  (`appVersionSource: local`), então a build local e a da nuvem não se atropelam.
 
 **3. Registrar o artefato**
 
 ```powershell
 cd ..
-.\scripts\registrar-ambiente-build.ps1 -Artefato android\app\build\outputs\bundle\release\app-release.aab -Observacao "3.1.0 (versionCode 1) teste interno"
+.\scripts\registrar-ambiente-build.ps1 -Artefato android\app\build\outputs\bundle\release\app-release.aab -Observacao "1.0.1 (versionCode 10001) teste interno"
 ```
 
 Confira no registro: "Assinado por" **não** pode ser `Android Debug`, e o certificado SHA-256 deve ser o mesmo em
@@ -202,7 +202,7 @@ todas as versões.
 
 ### Build na nuvem (EAS) — alternativa
 
-`eas.json` está pronto (AAB, `versionCode` automático, envio para o teste interno). Use `eas build -p android
+`eas.json` está pronto (AAB, `versionCode` do `app.json`, envio para o teste interno). Use `eas build -p android
 --profile production` e as variáveis com `eas env:create` (ver README). Se usar EAS, a chave fica guardada lá: não
 misture com a chave local sem planejar, porque todas as versões precisam da mesma chave de upload.
 

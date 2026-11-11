@@ -2,7 +2,7 @@
   "expo": {
     "name": "WeatherPRO",
     "slug": "weather-pro",
-    "version": "3.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -41,7 +41,7 @@
         "ACCESS_COARSE_LOCATION",
         "VIBRATE"
       ],
-      "versionCode": 1,
+      "versionCode": 10001,
       "blockedPermissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",

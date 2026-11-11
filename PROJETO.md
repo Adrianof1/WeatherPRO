@@ -1,6 +1,6 @@
 # WeatherPRO — Acompanhamento do projeto
 
-Última atualização: 11/11/2026 · Versão do app: 3.0.0 · Pacote Android: `com.adrianoferreira.weatherpro`
+Última atualização: 11/11/2026 · Versão do app: 1.0.1 (versionCode 10001) · Pacote Android: `com.adrianoferreira.weatherpro`
 
 ## 1. Estado atual
 
@@ -65,7 +65,7 @@ adb install -r app/build/outputs/apk/release/app-release.apk
 
 Ambiente usado: `ANDROID_HOME=C:\dev\android-sdk`, JDK 17 (`C:\dev\jdk17`). Anúncios e compras não funcionam no Expo Go.
 
-### v3.1 (preparação para a loja)
+### 1.0.1 (preparação para a loja; chamada de "v3.1" antes da decisão da versão)
 - Permissão `VIBRATE` adicionada. Sem ela, a vibração do alerta extremo podia derrubar o app no Android.
 - Link da política de privacidade no rodapé e na aba Café, e botão "Privacidade dos anúncios" quando o UMP exigir.
 - Nome da cidade em português e, no GPS, o nome do geocoding em vez do bairro (também ao atualizar uma cidade buscada).
@@ -115,6 +115,10 @@ Ambiente usado: `ANDROID_HOME=C:\dev\android-sdk`, JDK 17 (`C:\dev\jdk17`). Anú
 - [ ] Decidir o nome do app (conflito com "WeatherPro" da DTN).
 - [ ] Teste fechado com 12+ testadores por 14 dias (obrigatório em conta pessoal).
 - [ ] Gerar o AAB no outro PC (build local, registrando o ambiente) e enviar para o teste interno.
+
+### Versão
+- [x] Primeira versão na loja: **1.0.1**, `versionCode` **10001** (fórmula do guia §3.2: MAJOR×10000 + MINOR×100 + PATCH).
+  Próximas: 1.0.2 → 10002, 1.1.0 → 10100. Os números "3.x" eram internos e não vão para a loja.
 
 ### Melhorias técnicas
 - [ ] Testes automáticos para `alertEngine`, `weatherApi` e `purchases`.
