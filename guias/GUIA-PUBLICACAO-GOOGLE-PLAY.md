@@ -306,6 +306,9 @@ Requisitos da Google:
 - Teste a URL numa aba anônima no celular antes de colar. ⚠️ Sites SPA (React/Vite/Next) podem devolver a página
   inicial com status 200 para qualquer caminho — confira o título da página, não só se "abriu". Arquivos estáticos
   vão em `public/`.
+- Vários apps do mesmo desenvolvedor: use **um site só**, com uma pasta por app (`seudominio.com.br/<app>/privacidade.html`
+  e `/<app>/termos.html`) e **um único `app-ads.txt` na raiz**, com uma linha por conta de anúncios. Em site SPA
+  (Vite/React na Vercel/Netlify), os arquivos ficam em `public/` e são servidos antes do rewrite para o `index.html`.
 - App comerciante (§2.2): publique também os **Termos de Uso** (compras, reembolso, limites de responsabilidade) e
   coloque o link no app.
 
@@ -815,3 +818,4 @@ Copie para o projeto e marque conforme avança:
 | 09/11/2026 | Trechos cortados completados a partir da versão de 04/11 (fim do §8, §9, §10, tabela do §11, §12). Anexos A e B reconstruídos. Novas linhas no §11 (chave de outro app, pouca RAM, acknowledge, compra pendente). |
 | 11/11/2026 | §11: `.env` ausente no PC gera AAB com chave vazia; GitHub Pages só publica a branch configurada. |
 | 11/11/2026 | §M.2: por que anúncios minúsculos/imperceptíveis derrubam a conta AdMob e o que aumenta a receita dentro das regras. §7: capturas de tela de app Expo pela versão web com APIs simuladas. |
+| 11/11/2026 | §3.4: um site do desenvolvedor para todos os apps (pasta por app + `app-ads.txt` único na raiz). |

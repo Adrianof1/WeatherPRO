@@ -20,8 +20,8 @@ Library 8 via RevenueCat, permissões limpas), mas faltam itens que bloqueiam a 
       imagens e da ficha.
 
 **🚫 Bloqueiam a Console**
-- [ ] Política e Termos **fora do ar** (404): GitHub Pages não está ativado e os arquivos `docs/` só estão na branch
-      `ccr-81c633da-7iq8s0`, não na `main`. Fazer o merge na `main` e ativar Pages (`main` / `docs`).
+- [ ] Política e Termos em `voltzsi.com.br/weatherpro/` (branch `claude/weatherpro-privacidade-termos` do repositório
+      `sistema-gestao-adriano`). **Falta o merge na `main` do site** para a Vercel publicar; depois conferir as URLs.
 - [x] E-mail de contato `contato.voltz.si@gmail.com` na política e nos termos (use o mesmo como e-mail público
       na Console).
 - [x] Capturas de tela prontas em `store/capturas/` (celular e tablet 7" 1080×1920, tablet 10" 1620×2880; 4 de
@@ -36,7 +36,8 @@ Library 8 via RevenueCat, permissões limpas), mas faltam itens que bloqueiam a 
 - [ ] Produtos `cafe_premium` (não consumível) e `doacao_*` (consumíveis) no Play e no RevenueCat — só depois do
       1º AAB.
 - [ ] AdMob: mensagens de consentimento publicadas e app vinculado à loja.
-- [ ] `app-ads.txt` na raiz de um domínio (`adrianof1.github.io/app-ads.txt` dá 404).
+- [ ] `app-ads.txt` em `voltzsi.com.br/app-ads.txt` (mesma branch do site) e `https://voltzsi.com.br` informado como
+      site na ficha da loja e no AdMob.
 - [ ] 🛑 Pacote `com.adrianoferreira.weatherpro` registrado (já circulou como APK com chave de debug).
 - [ ] Testes da §M.7 (compra, pendente, restaurar, anúncios de teste, consentimento).
 
@@ -72,7 +73,7 @@ App de clima **não** está nas categorias restritas (finanças, saúde/medicina
 Grátis 🔒 (tem compras no app; grátis nunca vira pago).
 
 **Status de comerciante:** o app tem anúncios e compras → **comerciante**. Exige link de Termos de Serviço
-(💻 `docs/termos.html`) e, em conta pessoal, deixa telefone e endereço públicos (a partir de mar/2027).
+(💻 `voltzsi.com.br/weatherpro/termos.html`) e, em conta pessoal, deixa telefone e endereço públicos (a partir de mar/2027).
 
 ### CNPJ: app remunerado, empresa ainda em abertura
 
@@ -96,16 +97,22 @@ Se a sua conta de desenvolvedor é **pessoal** e foi criada depois de nov/2023, 
 com pelo menos 12 testadores ativos por 14 dias seguidos** antes de liberar a produção. Comece o teste fechado o quanto
 antes (amigos, colegas de ADS, grupos). Contas de organização (CNPJ) não têm essa regra.
 
-## 1. Política de privacidade 💻
+## 1. Política de privacidade e termos 💻
 
-- Arquivo: `docs/privacidade.html`.
-- Ative o GitHub Pages: repositório → Settings → Pages → *Deploy from a branch* → `main` / pasta `/docs`.
-- URL final: `https://adrianof1.github.io/WeatherPRO/privacidade.html` (já usada no app em `src/config.js`, `LINKS.privacy`).
-- Cole a mesma URL no Play Console → Política do app → Política de privacidade.
-- Termos de uso: `https://adrianof1.github.io/WeatherPRO/termos.html` (link na aba Café, `LINKS.terms`).
-- O repositório precisa ser **público** para o Pages gratuito.
-- Troque `SEU_EMAIL_DE_CONTATO` nos dois arquivos pelo e-mail público do desenvolvedor.
-- Teste as duas URLs numa aba anônima no celular antes de colar na Console.
+Publicados no site da VOLTZ (Vercel), no mesmo padrão dos apps TOMEI e OBD2 Pulse:
+
+| Página | URL | Fonte |
+|---|---|---|
+| Política de Privacidade | `https://voltzsi.com.br/weatherpro/privacidade.html` | `sistema-gestao-adriano/frontend/public/weatherpro/privacidade.html` |
+| Termos de Uso | `https://voltzsi.com.br/weatherpro/termos.html` | `.../weatherpro/termos.html` |
+| app-ads.txt | `https://voltzsi.com.br/app-ads.txt` | `sistema-gestao-adriano/frontend/public/app-ads.txt` |
+
+- No app: `LINKS.privacy` e `LINKS.terms` em `src/config.js` (rodapé da tela de clima e aba Café).
+- Na Console: cole a URL da política em Política do app → Política de privacidade; os termos vão na declaração de
+  comerciante.
+- O site é um SPA: **qualquer endereço** responde 200 com a página inicial. Ao conferir, veja o **título** da página
+  ("Política de Privacidade — WeatherPRO"), não só se abriu.
+- Para mudar o texto, edite os arquivos no repositório do site e faça o merge na `main` (deploy automático).
 
 ## 2. Anúncios (AdMob)
 
@@ -115,11 +122,9 @@ antes (amigos, colegas de ADS, grupos). Contas de organização (CNPJ) não têm
   isso o formulário falha com "no form configured".
 - [ ] AdMob → Apps → WeatherPRO → **vincular à loja** depois que o app estiver no Play (mesmo em teste). Os
   `internal-error`/`no fill` do banner geralmente somem depois disso e de 24 a 48h.
-- [ ] **app-ads.txt** 💻 (`docs/app-ads.txt`): o Google lê esse arquivo na **raiz** do domínio do site de
-  desenvolvedor informado na loja. O Pages de projeto (`/WeatherPRO/`) não é raiz. Opções:
-  1. Criar o repositório `Adrianof1.github.io`, colocar o `app-ads.txt` nele e informar
-     `https://adrianof1.github.io` como site na ficha da loja; ou
-  2. Usar um domínio próprio.
+- [ ] **app-ads.txt** 💻 em `https://voltzsi.com.br/app-ads.txt` (raiz do domínio, como o Google exige). Informe
+  `https://voltzsi.com.br` como site do desenvolvedor na Console e no AdMob (Apps › Configurações do app). ⚠️ Se outro
+  app com anúncios usar outra conta AdMob, acrescente uma linha por conta no mesmo arquivo.
 - Política do AdMob: não clique nos próprios anúncios. Para testar, use build de desenvolvimento (IDs de teste) ou
   cadastre seu aparelho como dispositivo de teste no AdMob.
 
@@ -317,7 +322,7 @@ biblioteca de faturamento (o primeiro build de produção já tem).
 
 ## 7. Ordem sugerida
 
-1. Ativar o GitHub Pages (privacidade).
+1. Merge da política e dos termos no site `voltzsi.com.br` e conferir as URLs.
 2. `eas build --profile production` → criar o app no Play Console → enviar o AAB no **teste interno**.
 3. Criar os produtos no Play e ligar o RevenueCat. Testar compra com conta de teste de licença.
 4. Vincular o app no AdMob e publicar as mensagens de consentimento.

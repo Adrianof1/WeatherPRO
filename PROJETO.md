@@ -79,7 +79,7 @@ Ambiente usado: `ANDROID_HOME=C:\dev\android-sdk`, JDK 17 (`C:\dev\jdk17`). Anú
 - [ ] Criar a mensagem de consentimento no AdMob (Privacidade e mensagens). Hoje falha com "no form configured".
 - [ ] Banner falha com `internal-error`. Aguardar as unidades novas começarem a servir e conferir o vínculo do app com a loja no AdMob.
 - [ ] Para iOS: criar um app iOS separado no AdMob. Hoje o `app.json` usa o mesmo ID nas duas plataformas.
-- [ ] Publicar `app-ads.txt` (pronto em `docs/app-ads.txt`) na raiz do site do desenvolvedor. Ver `PUBLICACAO.md`.
+- [ ] `app-ads.txt` em `voltzsi.com.br/app-ads.txt` (falta o merge no repositório do site). Ver `PUBLICACAO.md`.
 
 ### Alagamentos (dados)
 - [ ] Corrigir as coordenadas dos pontos que caem em outro bairro (Teresina: Av. Raul Lopes, Poti Velho, Buenos Aires, Santa Maria da Codipi; Rio: Praça da Bandeira, Av. Presidente Vargas; Salvador: Bairro da Paz; Manaus: São Jorge; BH: Av. Tereza Cristina; Fortaleza: Carlito Pamplona).
@@ -88,7 +88,7 @@ Ambiente usado: `ANDROID_HOME=C:\dev\android-sdk`, JDK 17 (`C:\dev\jdk17`). Anú
 
 ### Publicação (passo a passo completo em `PUBLICACAO.md`)
 - [ ] Gerar uma chave de assinatura própria. O APK atual usa a chave de debug, que não serve para a Play Store.
-- [x] Escrever a política de privacidade (`docs/privacidade.html`). Falta ativar o GitHub Pages e colocar o e-mail de contato.
+- [x] Política e termos em `voltzsi.com.br/weatherpro/` (falta o merge no repositório do site).
 - [ ] Preencher a declaração de segurança de dados e a classificação indicativa no Play Console.
 - [ ] Ícone, capturas de tela e descrição da loja.
 - [ ] Gerar o AAB com `npm run build:prod` (ou local) e enviar para teste interno.

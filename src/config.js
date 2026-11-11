@@ -10,10 +10,11 @@ export const ENV = {
   REVENUECAT_IOS_KEY: process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY || '',
 };
 
-// Política de privacidade publicada pelo GitHub Pages (pasta docs/). Obrigatória na Play Store.
+// Política e termos publicados em voltzsi.com.br (repositório sistema-gestao-adriano, frontend/public/weatherpro/).
+// Obrigatórios na Play Store.
 export const LINKS = {
-  privacy: 'https://adrianof1.github.io/WeatherPRO/privacidade.html',
-  terms: 'https://adrianof1.github.io/WeatherPRO/termos.html',
+  privacy: 'https://voltzsi.com.br/weatherpro/privacidade.html',
+  terms: 'https://voltzsi.com.br/weatherpro/termos.html',
   linkedin: 'https://linkedin.com/in/adrianoferreira-dev',
 };
 
