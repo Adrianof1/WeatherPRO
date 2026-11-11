@@ -6,7 +6,7 @@ no Play Console, AdMob e RevenueCat.
 > Segue a ordem do guia genérico de publicação (projeto TOMEI, `guias/GUIA-PUBLICACAO-GOOGLE-PLAY.md`).
 > Aqui ficam só as respostas específicas do WeatherPRO.
 
-## Situação da publicação (guia §12) — conferido em 11/11/2026
+## Situação da publicação (guia §12) — conferido em 11/11/2026 (atualizado no mesmo dia)
 
 **Veredito: ainda NÃO está pronto para enviar.** O código está pronto (trilhas T1+T2+T3, `targetSdk` 36, Billing
 Library 8 via RevenueCat, permissões limpas), mas faltam itens que bloqueiam a build ou a Console.
@@ -22,9 +22,14 @@ Library 8 via RevenueCat, permissões limpas), mas faltam itens que bloqueiam a 
 **🚫 Bloqueiam a Console**
 - [ ] Política e Termos **fora do ar** (404): GitHub Pages não está ativado e os arquivos `docs/` só estão na branch
       `ccr-81c633da-7iq8s0`, não na `main`. Fazer o merge na `main` e ativar Pages (`main` / `docs`).
-- [ ] `SEU_EMAIL_DE_CONTATO` ainda nos dois HTML.
-- [ ] Capturas de tela: celular (2+), tablet 7" e tablet 10" (9:16). Só existem ícone e recurso gráfico.
-- [ ] Conta de desenvolvedor: decidir pessoal × organização (CNPJ em abertura) e concluir as verificações (guia §1–§2).
+- [x] E-mail de contato `contato.voltz.si@gmail.com` na política e nos termos (use o mesmo como e-mail público
+      na Console).
+- [x] Capturas de tela prontas em `store/capturas/` (celular e tablet 7" 1080×1920, tablet 10" 1620×2880; 4 de
+      cada). Geradas pela versão web com dados simulados: refazer se o nome mudar (`scripts/capturas/README.md`).
+- [ ] **Conta pessoal** (decidido em 11/11/2026; CNPJ fica para depois, com conversão pelo guia §1.1). Consequências:
+      **teste fechado obrigatório com 12+ testadores por 14 dias** antes da produção, e como o app é comerciante,
+      endereço e telefone residenciais ficam públicos a partir de mar/2027 (converter para organização antes disso
+      resolve). Falta concluir as verificações (guia §1–§2).
 
 **⚠️ Antes do teste fechado/produção**
 - [ ] `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY` (sem ela a aba Café mostra "compras só funcionam na versão da loja").
