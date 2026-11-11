@@ -6,6 +6,48 @@ no Play Console, AdMob e RevenueCat.
 > Segue a ordem do guia genérico de publicação (projeto TOMEI, `guias/GUIA-PUBLICACAO-GOOGLE-PLAY.md`).
 > Aqui ficam só as respostas específicas do WeatherPRO.
 
+## Situação da publicação (guia §12) — conferido em 11/11/2026
+
+**Veredito: ainda NÃO está pronto para enviar.** O código está pronto (trilhas T1+T2+T3, `targetSdk` 36, Billing
+Library 8 via RevenueCat, permissões limpas), mas faltam itens que bloqueiam a build ou a Console.
+
+**🚫 Bloqueiam a build de loja**
+- [ ] **`.env` não existe no PC.** Sem `EXPO_PUBLIC_WEATHER_API_KEY`, o app instalado abre direto na tela de erro de
+      chave. Criar a partir do `.env.example` antes do `prebuild`.
+- [ ] **Chave de upload não criada** (`~/.gradle/gradle.properties` sem `WEATHERPRO_UPLOAD_*`). Sem ela o AAB sai com
+      a chave de debug e a Play recusa.
+- [ ] **Nome do app:** continua "WeatherPRO", que conflita com o app da DTN na Play (seção abaixo). Decidir antes das
+      imagens e da ficha.
+
+**🚫 Bloqueiam a Console**
+- [ ] Política e Termos **fora do ar** (404): GitHub Pages não está ativado e os arquivos `docs/` só estão na branch
+      `ccr-81c633da-7iq8s0`, não na `main`. Fazer o merge na `main` e ativar Pages (`main` / `docs`).
+- [ ] `SEU_EMAIL_DE_CONTATO` ainda nos dois HTML.
+- [ ] Capturas de tela: celular (2+), tablet 7" e tablet 10" (9:16). Só existem ícone e recurso gráfico.
+- [ ] Conta de desenvolvedor: decidir pessoal × organização (CNPJ em abertura) e concluir as verificações (guia §1–§2).
+
+**⚠️ Antes do teste fechado/produção**
+- [ ] `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY` (sem ela a aba Café mostra "compras só funcionam na versão da loja").
+- [ ] Produtos `cafe_premium` (não consumível) e `doacao_*` (consumíveis) no Play e no RevenueCat — só depois do
+      1º AAB.
+- [ ] AdMob: mensagens de consentimento publicadas e app vinculado à loja.
+- [ ] `app-ads.txt` na raiz de um domínio (`adrianof1.github.io/app-ads.txt` dá 404).
+- [ ] 🛑 Pacote `com.adrianoferreira.weatherpro` registrado (já circulou como APK com chave de debug).
+- [ ] Testes da §M.7 (compra, pendente, restaurar, anúncios de teste, consentimento).
+
+**🔧 Recomendado (não bloqueia)**
+- [ ] `npx expo install --check`: `expo` 54.0.32 → 54.0.37, `expo-dev-client`, `expo-font` (patch) e
+      `react-native-svg` 15.15.1 → 15.12.1 (versão esperada pelo SDK 54).
+- [ ] PC com 7,7 GB de RAM e ~11 GB livres: o AAB com todas as arquiteturas é mais pesado que o APK só arm64. Liberar
+      espaço (~20 GB) antes da 1ª build de loja.
+
+**✅ Já pronto**
+- Código das trilhas T1/T2/T3 conferido (tabela abaixo), pagamento pendente tratado.
+- `targetSdk`/`compileSdk` 36, AAB configurado, `versionCode` 1, permissões não usadas bloqueadas.
+- Plugin de assinatura (`plugins/withReleaseSigning.js`), script de registro do PC (testado no Windows).
+- Política, Termos e `app-ads.txt` escritos; links dentro do app; ícone 512 e recurso gráfico 1024×500.
+- Textos da ficha e respostas de Conteúdo do app (seções 4 e 5).
+
 ## ⚠️ Decidir antes: o nome "WeatherPRO" já existe na Play
 
 Já existe o **"WeatherPro: Forecast & Radar"** (pacote `com.mg.android`, DTN Germany, antigo MeteoGroup), com mais
