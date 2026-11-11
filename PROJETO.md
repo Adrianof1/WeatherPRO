@@ -1,12 +1,16 @@
 # WeatherPRO — Acompanhamento do projeto
 
-Última atualização: 06/11/2026 · Versão do app: 3.0.0 · Pacote Android: `com.adrianoferreira.weatherpro`
+Última atualização: 11/11/2026 · Versão do app: 3.0.0 · Pacote Android: `com.adrianoferreira.weatherpro`
 
 ## 1. Estado atual
 
 App Expo SDK 54 / React Native 0.81 que roda no Android. Foi testado em um celular real (build de release, arm64).
 Clima, busca, alertas e alagamentos funcionam com dados reais da OpenWeather. **Compras ainda não funcionam**
 (faltam configurações externas, ver seção 4). Anúncios estão integrados, mas ainda não exibem.
+
+**Publicação (11/11/2026):** código pronto para a loja. Ficha, ícone, recurso gráfico, capturas, política e termos
+prontos. A build de loja (AAB) será feita em **outro PC** (mais memória, já tem o `.env`). Situação completa no topo de
+`PUBLICACAO.md`.
 
 ## 2. O que foi feito
 
@@ -66,6 +70,23 @@ Ambiente usado: `ANDROID_HOME=C:\dev\android-sdk`, JDK 17 (`C:\dev\jdk17`). Anú
 - Link da política de privacidade no rodapé e na aba Café, e botão "Privacidade dos anúncios" quando o UMP exigir.
 - Nome da cidade em português e, no GPS, o nome do geocoding em vez do bairro (também ao atualizar uma cidade buscada).
 - `eas.json` de produção gera AAB, incrementa o `versionCode` e envia para o teste interno.
+- Permissões que o Expo adicionava sem uso (armazenamento, `SYSTEM_ALERT_WINDOW`, microfone) bloqueadas no `app.json`.
+- Assinatura de release pelo plugin `plugins/withReleaseSigning.js` (lê a chave do `~/.gradle/gradle.properties`;
+  sobrevive ao `expo prebuild`).
+- Compra pendente (boleto) não aparece mais como erro: avisa que o Premium chega quando o pagamento confirmar.
+- `metro.config.js`: anúncios e compras viram módulos vazios só na web (usado para gerar as capturas).
+
+### Preparação da loja (09 a 11/11/2026)
+- Guia genérico `guias/GUIA-PUBLICACAO-GOOGLE-PLAY.md` (gerar e publicar), com trilhas de modelo de negócio (§M).
+  O WeatherPRO segue **T1 anúncios + T2 compra no app + T3 doações**.
+- Registro do PC da build: `scripts/registrar-ambiente-build.ps1`/`.sh` → `docs/REGISTRO-BUILDS.md`.
+- Imagens da loja em `store/`: ícone 512, recurso gráfico 1024×500 e capturas (celular, tablet 7" e 10"), geradas
+  pela versão web com dados simulados (`scripts/capturas/`).
+- Política e termos em `voltzsi.com.br/weatherpro/` e `app-ads.txt` na raiz do domínio, publicados pelo repositório
+  do site (`sistema-gestao-adriano`, branch `claude/weatherpro-privacidade-termos`, falta o merge na `main`).
+- Decisões: conta de desenvolvedor **pessoal** (CNPJ depois), e-mail público `contato.voltz.si@gmail.com`.
+- ⚠️ Nome "WeatherPRO" conflita com o app da DTN na Play: **decidir o nome** antes de enviar.
+- Anúncios minúsculos/invisíveis para ganhar mais: descartado (viola o AdMob; ver guia §M.2).
 
 ## 4. O que ainda falta fazer
 
@@ -87,11 +108,13 @@ Ambiente usado: `ANDROID_HOME=C:\dev\android-sdk`, JDK 17 (`C:\dev\jdk17`). Anú
 - [ ] Substituir a lista fixa por uma fonte oficial (SGB/CPRM, Defesa Civil, CEMADEN) e citar a fonte.
 
 ### Publicação (passo a passo completo em `PUBLICACAO.md`)
-- [ ] Gerar uma chave de assinatura própria. O APK atual usa a chave de debug, que não serve para a Play Store.
+- [ ] Gerar a chave de upload no PC da build (passo a passo em `PUBLICACAO.md` §3). O plugin de assinatura já está pronto.
 - [x] Política e termos em `voltzsi.com.br/weatherpro/` (falta o merge no repositório do site).
 - [ ] Preencher a declaração de segurança de dados e a classificação indicativa no Play Console.
-- [ ] Ícone, capturas de tela e descrição da loja.
-- [ ] Gerar o AAB com `npm run build:prod` (ou local) e enviar para teste interno.
+- [x] Ícone, recurso gráfico, capturas de tela e descrição da loja (refazer as imagens se o nome mudar).
+- [ ] Decidir o nome do app (conflito com "WeatherPro" da DTN).
+- [ ] Teste fechado com 12+ testadores por 14 dias (obrigatório em conta pessoal).
+- [ ] Gerar o AAB no outro PC (build local, registrando o ambiente) e enviar para o teste interno.
 
 ### Melhorias técnicas
 - [ ] Testes automáticos para `alertEngine`, `weatherApi` e `purchases`.
