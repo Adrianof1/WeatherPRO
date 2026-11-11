@@ -494,6 +494,11 @@ Outras lições:
 - Builds locais de teste só para `arm64-v8a` são ótimas para velocidade, mas o AAB da loja deve incluir todas as
   arquiteturas (§3.0).
 
+- Expo/RN com build local: variáveis `EXPO_PUBLIC_*` vêm do `.env` **do PC que compila**. Se ele não existir, a
+  chave sai vazia no AAB sem erro de build; confira o `.env` no checklist do §3.0 antes de cada build de loja.
+- Política de Privacidade no GitHub Pages: o Pages publica só a branch configurada (geralmente `main`). Arquivos em
+  outra branch dão 404; teste a URL antes de colar na Console (§3.4).
+
 ## M. Modelo de negócio: trilhas para gerar e publicar o app
 
 **Decida o modelo antes de gerar o código.** Cada trilha diz o que construir no app, o que criar na Console e quais
@@ -785,3 +790,4 @@ Copie para o projeto e marque conforme avança:
 | 09/11/2026 | §M reescrito como trilhas de modelo de negócio (T0 grátis, T1 anúncios, T2 compra no app, T3 doações, T4 assinatura, T5 pago), com checklist "No código" para gerar o app, testes (M.7) e declarações por trilha (M.9). Guia passa a cobrir a geração do app, não só a publicação. |
 | 09/11/2026 | §11: scripts PowerShell em UTF-8 com BOM, stderr no PowerShell 5.1 e JDK fora do PATH no Windows. |
 | 09/11/2026 | Trechos cortados completados a partir da versão de 04/11 (fim do §8, §9, §10, tabela do §11, §12). Anexos A e B reconstruídos. Novas linhas no §11 (chave de outro app, pouca RAM, acknowledge, compra pendente). |
+| 11/11/2026 | §11: `.env` ausente no PC gera AAB com chave vazia; GitHub Pages só publica a branch configurada. |
