@@ -12,7 +12,7 @@ no Play Console, AdMob e RevenueCat.
 Library 8 via RevenueCat, permissões limpas), mas faltam itens que bloqueiam a build ou a Console.
 
 **🚫 Bloqueiam a build de loja**
-- [ ] **`.env` não existe no PC.** Sem `EXPO_PUBLIC_WEATHER_API_KEY`, o app instalado abre direto na tela de erro de
+- [ ] **`.env` não existe neste PC** (o outro PC, com mais memória, já tem; a build será feita lá). Sem `EXPO_PUBLIC_WEATHER_API_KEY`, o app instalado abre direto na tela de erro de
       chave. Criar a partir do `.env.example` antes do `prebuild`.
 - [ ] **Chave de upload não criada** (`~/.gradle/gradle.properties` sem `WEATHERPRO_UPLOAD_*`). Sem ela o AAB sai com
       a chave de debug e a Play recusa.

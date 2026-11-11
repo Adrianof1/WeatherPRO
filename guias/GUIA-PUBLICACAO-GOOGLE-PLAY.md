@@ -398,6 +398,14 @@ altura fixa (senão o celular encolhe quando o texto quebra em 2 linhas e as ima
 funções que existem na versão publicada; guarde as telas originais como fonte e regenere quando o nome ou a tela
 mudar.
 
+**Dica — gerar capturas sem celular (Expo/React Native):** exporte a versão web
+(`npx expo export --platform web`), simule as respostas das APIs com `page.route` do Playwright (sem gastar chave
+real nem precisar do `.env`) e tire as telas no tamanho exato (celular 360×640 com escala 3 = 1080×1920; tablet 10"
+810×1440 com escala 2). Bibliotecas só nativas (anúncios, compras) quebram o bundle web: no `metro.config.js`,
+resolva-as como `{ type: 'empty' }` só quando `platform === 'web'`. Escolha dados de exemplo que mostrem as funções
+sem deixar a tela alarmante (ex.: tema de alerta vermelho como 1ª imagem) e deixe fora telas que na web aparecem
+diferentes do celular (ex.: compras indisponíveis).
+
 **Dica — gerar capturas sem celular (Flutter):** um teste temporário com `matchesGoldenFile` renderiza as telas reais
 com dados de exemplo no tamanho exato (`tester.view.physicalSize` + `devicePixelRatio`). Cuidados: carregar fontes
 reais com `FontLoader` (Roboto e MaterialIcons do cache do Flutter; uma fonte de emoji do sistema como fallback),
@@ -572,6 +580,21 @@ Valem para **todas** as trilhas que ganham dinheiro (T1 a T5):
 - [ ] `app-ads.txt` na **raiz** do domínio informado como site na ficha (subpasta não vale).
 - [ ] Declarações: Anúncios = Sim (§6.3), ID de publicidade = Sim (§6.13), Segurança dos dados com IDs do aparelho,
       interações e diagnóstico enviados pelo SDK (§6.6).
+
+**⚠️ Anúncios minúsculos ou "quase imperceptíveis" para ganhar mais: não.** Parece esperto, mas é a forma mais
+rápida de perder a conta AdMob:
+
+- Formatos e tamanhos são definidos pela rede (banner mínimo 320×50; nativo com tamanho mínimo e selo "Anúncio").
+  Encolher, esconder, deixar transparente ou cobrir um anúncio é proibido.
+- Impressão que o usuário não consegue ver é tráfego inválido: a receita é descontada e a conta pode ser suspensa
+  (o AdMob mede a visibilidade).
+- Vários banners na mesma tela ou mais anúncios do que conteúdo violam a regra de densidade.
+- Anúncio pequeno colado em botão gera clique acidental, também tratado como inválido.
+
+O que aumenta a receita dentro das regras: um banner adaptativo ancorado (em vez de banner no meio do conteúdo, que
+pode ser rolado para fora), anúncio **nativo** desenhado no estilo do app entre seções (com o selo "Anúncio"),
+**premiado** opcional em troca de um benefício real, anúncio de **abertura do app** só a partir do 2º uso e com
+limite, e mediação (outras redes competindo pelo mesmo espaço). Mais receita vem de mais uso, não de mais anúncios.
 
 **Armadilhas:** clicar nos próprios anúncios bloqueia a conta AdMob; público com menores de 13 exige SDKs
 certificados para famílias e anúncios não personalizados; anúncio na abertura do app é motivo comum de recusa.
@@ -791,3 +814,4 @@ Copie para o projeto e marque conforme avança:
 | 09/11/2026 | §11: scripts PowerShell em UTF-8 com BOM, stderr no PowerShell 5.1 e JDK fora do PATH no Windows. |
 | 09/11/2026 | Trechos cortados completados a partir da versão de 04/11 (fim do §8, §9, §10, tabela do §11, §12). Anexos A e B reconstruídos. Novas linhas no §11 (chave de outro app, pouca RAM, acknowledge, compra pendente). |
 | 11/11/2026 | §11: `.env` ausente no PC gera AAB com chave vazia; GitHub Pages só publica a branch configurada. |
+| 11/11/2026 | §M.2: por que anúncios minúsculos/imperceptíveis derrubam a conta AdMob e o que aumenta a receita dentro das regras. §7: capturas de tela de app Expo pela versão web com APIs simuladas. |
